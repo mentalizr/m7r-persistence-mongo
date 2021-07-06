@@ -1,0 +1,6 @@
+rootProject.name = 'm7r-persistence-mongo'
+
+includeBuild('../m7r-backend-config')
+
+
+

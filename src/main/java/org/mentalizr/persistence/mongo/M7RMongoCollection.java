@@ -1,0 +1,26 @@
+package org.mentalizr.persistence.mongo;
+
+public enum M7RMongoCollection {
+
+    FORM_DATA("formData"),
+    FEEDBACK_DATA("feedbackData"),
+    EXERCISE_STATUS__SUBMITTED("exerciseStatusSubmitted");
+
+    private final String name;
+
+    M7RMongoCollection(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+//    public static boolean contains(String collectionName) {
+//        for (M7RMongoCollection m7RMongoCollection : M7RMongoCollection.values()) {
+//            if (m7RMongoCollection.getName().equals(collectionName)) return true;
+//        }
+//        return false;
+//    }
+
+}
