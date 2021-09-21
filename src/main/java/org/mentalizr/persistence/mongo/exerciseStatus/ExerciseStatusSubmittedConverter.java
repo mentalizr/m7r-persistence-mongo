@@ -1,10 +1,7 @@
 package org.mentalizr.persistence.mongo.exerciseStatus;
 
 import org.bson.Document;
-import org.mentalizr.persistence.mongo.formData.FormData;
-import org.mentalizr.persistence.mongo.formData.FormDataConverter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExerciseStatusSubmittedConverter {

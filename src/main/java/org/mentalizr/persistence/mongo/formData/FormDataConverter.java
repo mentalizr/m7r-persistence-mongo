@@ -4,57 +4,57 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FormElementDataSO;
 
 public class FormDataConverter {
 
-    public static Document convert(FormData formData) {
+    public static Document convert(FormDataSO formDataSO) {
 
-        Document document = new Document(FormData.USER_ID, formData.getUserId())
-                .append(FormData.CONTENT_ID, formData.getContentId())
-                .append(FormData.EDITABLE, formData.isEditable());
+        Document document = new Document(FormDataSO.USER_ID, formDataSO.getUserId())
+                .append(FormDataSO.CONTENT_ID, formDataSO.getContentId())
+                .append(FormDataSO.EDITABLE, formDataSO.isEditable());
 
         List<Document> formElementDataList = new ArrayList<>();
 
-        for (FormElementData formElementData : formData.getFormElementDataList()) {
+        for (FormElementDataSO formElementDataSO : formDataSO.getFormElementDataList()) {
 
-            Document formElementDataDocument = new Document(FormElementData.FORM_ELEMENT_TYPE, formElementData.getFormElementType())
-                    .append(FormElementData.FORM_ELEMENT_ID, formElementData.getFormElementId())
-                    .append(FormElementData.FORM_ELEMENT_VALUE, formElementData.getFormElementValue());
+            Document formElementDataDocument = new Document(FormElementDataSO.FORM_ELEMENT_TYPE, formElementDataSO.getFormElementType())
+                    .append(FormElementDataSO.FORM_ELEMENT_ID, formElementDataSO.getFormElementId())
+                    .append(FormElementDataSO.FORM_ELEMENT_VALUE, formElementDataSO.getFormElementValue());
             formElementDataList.add(formElementDataDocument);
 
         }
 
-        document.append(FormData.FORM_ELEMENT_DATA_LIST, formElementDataList);
+        document.append(FormDataSO.FORM_ELEMENT_DATA_LIST, formElementDataList);
 
         return document;
     }
 
-    public static FormData convert(Document document) {
+    public static FormDataSO convert(Document document) {
 
-        String userId = document.getString(FormData.USER_ID);
-        String contentId = document.getString(FormData.CONTENT_ID);
-        boolean editable = document.getBoolean(FormData.EDITABLE);
+        String userId = document.getString(FormDataSO.USER_ID);
+        String contentId = document.getString(FormDataSO.CONTENT_ID);
+        boolean editable = document.getBoolean(FormDataSO.EDITABLE);
 
-        FormData formData = new FormData();
-        formData.setUserId(userId);
-        formData.setContentId(contentId);
-        formData.setEditable(editable);
+        FormDataSO formDataSO = new FormDataSO();
+        formDataSO.setUserId(userId);
+        formDataSO.setContentId(contentId);
+        formDataSO.setEditable(editable);
 
-//        final Class<? extends List> clazz = new ArrayList<Document>().getClass();
-        List<Document> formElementDataDocumentList = document.getList(FormData.FORM_ELEMENT_DATA_LIST, Document.class);
-        List<FormElementData> formElementDataList = new ArrayList<>();
-        formData.setFormElementDataList(formElementDataList);
+        List<Document> formElementDataDocumentList = document.getList(FormDataSO.FORM_ELEMENT_DATA_LIST, Document.class);
+        List<FormElementDataSO> formElementDataSOList = new ArrayList<>();
+        formDataSO.setFormElementDataList(formElementDataSOList);
 
         for (Document formElementDataDocument : formElementDataDocumentList) {
-            FormElementData formElementData = new FormElementData();
-            formElementData.setFormElementType(formElementDataDocument.getString(FormElementData.FORM_ELEMENT_TYPE));
-            formElementData.setFormElementId(formElementDataDocument.getString(FormElementData.FORM_ELEMENT_ID));
-            formElementData.setFormElementValue(formElementDataDocument.getString(FormElementData.FORM_ELEMENT_VALUE));
-            formElementDataList.add(formElementData);
+            FormElementDataSO formElementDataSO = new FormElementDataSO();
+            formElementDataSO.setFormElementType(formElementDataDocument.getString(FormElementDataSO.FORM_ELEMENT_TYPE));
+            formElementDataSO.setFormElementId(formElementDataDocument.getString(FormElementDataSO.FORM_ELEMENT_ID));
+            formElementDataSO.setFormElementValue(formElementDataDocument.getString(FormElementDataSO.FORM_ELEMENT_VALUE));
+            formElementDataSOList.add(formElementDataSO);
         }
 
-        return formData;
+        return formDataSO;
     }
-
 
 }

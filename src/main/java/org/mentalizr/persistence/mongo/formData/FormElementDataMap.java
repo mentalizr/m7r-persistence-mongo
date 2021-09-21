@@ -2,15 +2,17 @@ package org.mentalizr.persistence.mongo.formData;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FormElementDataSO;
 
 public class FormElementDataMap {
 
-    private final Map<String, FormElementData> formElementDataMap = new HashMap<>();
+    private final Map<String, FormElementDataSO> formElementDataMap = new HashMap<>();
 
-    public FormElementDataMap(FormData formData) {
+    public FormElementDataMap(FormDataSO formDataSO) {
 
-        for (FormElementData formElementData : formData.getFormElementDataList()) {
-            this.formElementDataMap.put(formElementData.getFormElementId(), formElementData);
+        for (FormElementDataSO formElementDataSO : formDataSO.getFormElementDataList()) {
+            this.formElementDataMap.put(formElementDataSO.getFormElementId(), formElementDataSO);
         }
     }
 
@@ -18,7 +20,7 @@ public class FormElementDataMap {
         return this.formElementDataMap.containsKey(formElementId);
     }
 
-    public FormElementData getFormElementData(String formElementId) {
+    public FormElementDataSO getFormElementData(String formElementId) {
         return this.formElementDataMap.get(formElementId);
     }
 

@@ -6,66 +6,54 @@ import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.MongoDB;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FormDataMongoHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(FormDataMongoHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(FormDataMongoHandler.class);
 
-    private static MongoCollection<Document> mongoCollection = MongoDB.getMongoCollection(M7RMongoCollection.FORM_DATA);
+    private static final MongoCollection<Document> mongoCollection = MongoDB.getMongoCollection(M7RMongoCollection.FORM_DATA);
 
     public static Document fetch(String userId, String contentId) {
 
-        logger.debug("FormDataMongoHandler.fetch aufgerufen.");
-
-        Document queryDocument = new Document("userId", userId)
-                .append("contentId", contentId);
-
+        Document queryDocument =
+                new Document(FormDataSO.USER_ID, userId)
+                .append(FormDataSO.CONTENT_ID, contentId);
 
         try {
             FindIterable<Document> iterable = mongoCollection.find(queryDocument);
-
-            if (iterable.first() == null) {
-                // System.out.println("Kein Dokument in MongoDB gefunden.");
-                return null;
-            }
-
-//            System.out.println("Dokument in MongoDB gefunden.");
-            return iterable.first();
+            // TODO besser als null Rückgabe
+            return iterable.first() != null ? iterable.first() : null;
 
         } catch (Exception e) {
 
-            // TODO Execption-Konzept
+            // TODO Exception-Konzept
             logger.error(e.getMessage(), e);
             return null;
         }
-
     }
 
     public static void createOrUpdate(Document document) {
 
-//        System.out.println("FormDataMongoHandler.createOrUpdate aufgerufen.");
+        String userId = (String) document.get(FormDataSO.USER_ID);
+        String contentId = (String) document.get(FormDataSO.CONTENT_ID);
 
-        String userId = (String) document.get("userId");
-        String contentId = (String) document.get("contentId");
-
-//        System.out.println(userId);
-//        System.out.println(contentId);
-
-        Document queryDocument = new Document("userId", userId)
-                .append("contentId", contentId);
+        Document queryDocument = new Document(FormDataSO.USER_ID, userId)
+                .append(FormDataSO.CONTENT_ID, contentId);
 
         Document updateDocument = new Document("$set", document);
 
         mongoCollection.updateOne(queryDocument, updateDocument, new UpdateOptions().upsert(true));
     }
 
-//    public static void main(String[] args) {
-//        String jsonString = "{\"userId\":\"dummy\",\"contentId\":\"dep_m1_sm1_s2\",\"editable\":true,\"formElementDataList\":[{\"formElementId\":\"symptome\",\"formElementValue\":\"Hier die Eingabe zu den Symptomen.\"}]}";
-//
-//
-//    }
+    public static void clean(String userId) {
+
+        Document queryDocument = new Document(FormDataSO.USER_ID, userId);
+
+        mongoCollection.deleteMany(queryDocument);
+    }
 
 }
 

@@ -1,11 +1,6 @@
 package org.mentalizr.persistence.mongo.feedbackData;
 
 import org.bson.Document;
-import org.mentalizr.persistence.mongo.formData.FormData;
-import org.mentalizr.persistence.mongo.formData.FormElementData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FeedbackDataConverter {
 

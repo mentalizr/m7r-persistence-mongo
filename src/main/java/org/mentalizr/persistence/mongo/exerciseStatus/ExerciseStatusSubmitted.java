@@ -1,7 +1,5 @@
 package org.mentalizr.persistence.mongo.exerciseStatus;
 
-import org.mentalizr.persistence.mongo.formData.FormData;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Instant;
 import java.time.ZonedDateTime;
