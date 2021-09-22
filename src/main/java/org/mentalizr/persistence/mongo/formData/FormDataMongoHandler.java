@@ -48,6 +48,22 @@ public class FormDataMongoHandler {
         mongoCollection.updateOne(queryDocument, updateDocument, new UpdateOptions().upsert(true));
     }
 
+    public static void mergeWithPreexisting(FormDataSO formDataSO) {
+
+        String userId = formDataSO.getUserId();
+        String contentId = formDataSO.getContentId();
+
+        Document documentPreexisting = FormDataMongoHandler.fetch(userId, contentId);
+        FormDataSO formDataSOPreexisting = documentPreexisting == null ? new FormDataSO() : FormDataConverter.convert(documentPreexisting);
+
+        FormDataSO formDataSOMerged = FormDataMerger.merge(formDataSO, formDataSOPreexisting);
+
+        Document document = FormDataConverter.convert(formDataSOMerged);
+        FormDataMongoHandler.createOrUpdate(document);
+
+        logger.debug("formData merged:\n" + formDataSOMerged);
+    }
+
     public static void clean(String userId) {
 
         Document queryDocument = new Document(FormDataSO.USER_ID, userId);
