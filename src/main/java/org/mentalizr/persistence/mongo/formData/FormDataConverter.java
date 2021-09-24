@@ -53,6 +53,7 @@ public class FormDataConverter {
         public static Document convert(FeedbackSO feedbackSO) {
             return new Document(FeedbackSO.TEXT, feedbackSO.getText())
                     .append(FeedbackSO.CREATED_TIMESTAMP, feedbackSO.getCreatedTimestamp())
+                    .append(FeedbackSO.THERAPIST_ID, feedbackSO.getTherapistId())
                     .append(FeedbackSO.SEEN_BY_PATIENT, feedbackSO.isSeenByPatient())
                     .append(FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP, feedbackSO.getSeenByPatientTimestamp());
         }
@@ -61,6 +62,7 @@ public class FormDataConverter {
             FeedbackSO feedbackSO = new FeedbackSO();
             feedbackSO.setText(document.getString(FeedbackSO.TEXT));
             feedbackSO.setCreatedTimestamp(document.getString(FeedbackSO.CREATED_TIMESTAMP));
+            feedbackSO.setTherapistId(document.getString(FeedbackSO.THERAPIST_ID));
             feedbackSO.setSeenByPatient(document.getBoolean(FeedbackSO.SEEN_BY_PATIENT));
             feedbackSO.setSeenByPatientTimestamp(document.getString(FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP));
             return feedbackSO;
@@ -117,6 +119,12 @@ public class FormDataConverter {
         for (Document formElementDataDocument : formElementDataDocumentList) {
             FormElementDataSO formElementDataSO = FormElementDataConverter.convert(formElementDataDocument);
             formElementDataSOList.add(formElementDataSO);
+        }
+
+        Document feedbackDocument = document.get(FormDataSO.FEEDBACK, Document.class);
+        if (feedbackDocument != null) {
+            FeedbackSO feedbackSO = FeedbackConverter.convert(feedbackDocument);
+            formDataSO.setFeedbackSO(feedbackSO);
         }
 
         return formDataSO;

@@ -4,6 +4,7 @@ import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 import org.junit.jupiter.api.Test;
 import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormElementDataSO;
 
@@ -105,6 +106,57 @@ class FormDataConverterTest {
                 "}";
     }
 
+    private FormDataSO createFeedbackFormDataSO() {
+        FormDataSO formDataSO = createExerciseFormDataSO();
+        FeedbackSO feedbackSO = new FeedbackSO();
+        feedbackSO.setText("text");
+        feedbackSO.setCreatedTimestamp("createdTimestamp");
+        feedbackSO.setTherapistId("therapistId");
+        feedbackSO.setSeenByPatient(true);
+        feedbackSO.setSeenByPatientTimestamp("seenByPatientTimestamp");
+        formDataSO.setFeedbackSO(feedbackSO);
+        return formDataSO;
+    }
+
+    private void assertFeedbackFormDataSO(FormDataSO formDataSO) {
+        assertExerciseFormDataSO(formDataSO);
+        assertNotNull(formDataSO.getFeedbackSO());
+        FeedbackSO feedbackSO = formDataSO.getFeedbackSO();
+        assertEquals("text", feedbackSO.getText());
+        assertEquals("createdTimestamp", feedbackSO.getCreatedTimestamp());
+        assertEquals("therapistId", feedbackSO.getTherapistId());
+        assertTrue(feedbackSO.isSeenByPatient());
+        assertEquals("seenByPatientTimestamp", feedbackSO.getSeenByPatientTimestamp());
+    }
+
+    private String getFeedbackFormDataSOAsJson() {
+        return "{\n" +
+                "  \"userId\": \"userId\",\n" +
+                "  \"contentId\": \"contentId\",\n" +
+                "  \"editable\": true,\n" +
+                "  \"exercise\": {\n" +
+                "    \"sent\": true,\n" +
+                "    \"lastModifiedTimestamp\": \"lastModifiedTimestamp\",\n" +
+                "    \"seenByTherapist\": true,\n" +
+                "    \"seenByTherapistTimestamp\": \"seenByTherapistTimestamp\"\n" +
+                "  },\n" +
+                "  \"formElementDataList\": [\n" +
+                "    {\n" +
+                "      \"formElementId\": \"elementId\",\n" +
+                "      \"formElementType\": \"elementType\",\n" +
+                "      \"formElementValue\": \"elementValue\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"feedback\": {\n" +
+                "    \"text\": \"text\",\n" +
+                "    \"createdTimestamp\": \"createdTimestamp\",\n" +
+                "    \"therapistId\": \"therapistId\",\n" +
+                "    \"seenByPatient\": true,\n" +
+                "    \"seenByPatientTimestamp\": \"seenByPatientTimestamp\"\n" +
+                "  }\n" +
+                "}";
+    }
+
     private String getPrettyJson(Document document) {
         JsonWriterSettings.Builder settingsBuilder = JsonWriterSettings.builder().indent(true);
         return document.toJson(settingsBuilder.build());
@@ -126,7 +178,6 @@ class FormDataConverterTest {
 
     @Test
     void exercise() {
-
         FormDataSO formDataSO = createExerciseFormDataSO();
 
         Document document = FormDataConverter.convert(formDataSO);
@@ -137,6 +188,20 @@ class FormDataConverterTest {
 
         formDataSO = FormDataConverter.convert(document);
         assertExerciseFormDataSO(formDataSO);
+    }
+
+    @Test
+    void feedback() {
+        FormDataSO formDataSO = createFeedbackFormDataSO();
+
+        Document document = FormDataConverter.convert(formDataSO);
+        String json = getPrettyJson(document);
+        if (outputJson) System.out.println(json);
+        String expectedJson = getFeedbackFormDataSOAsJson();
+        assertEquals(expectedJson, json);
+
+        formDataSO = FormDataConverter.convert(document);
+        assertFeedbackFormDataSO(formDataSO);
     }
 
 }
