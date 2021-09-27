@@ -22,6 +22,9 @@ dependencies {
 
     implementation 'org.mentalizr:m7r-backend-config:1.0-SNAPSHOT'
     implementation 'org.mentalizr:m7r-service-objects:0.0.1-SNAPSHOT'
+
+    implementation 'com.github.arthurpicht:utils-core:1.3.0'
+
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'org.slf4j:jul-to-slf4j:1.7.32' // Leitet java.util.logging um auf slf4j, für mongo-java-driver

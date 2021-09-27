@@ -5,20 +5,26 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
-import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
-import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
-import org.mentalizr.serviceObjects.frontend.patient.formData.FormElementDataSO;
+import org.mentalizr.persistence.mongo.MongoDates;
+import org.mentalizr.serviceObjects.frontend.patient.formData.*;
 
 public class FormDataConverter {
 
     private static class ExerciseConverter {
 
         public static Document convert(ExerciseSO exerciseSO) {
-            return new Document(ExerciseSO.SENT, exerciseSO.isSent())
-                    .append(ExerciseSO.LAST_MODIFIED_TIMESTAMP, exerciseSO.getLastModifiedTimestamp())
+            Document document = new Document(ExerciseSO.SENT, exerciseSO.isSent());
+            MongoDates.append(document, ExerciseSO.LAST_MODIFIED_TIMESTAMP, exerciseSO.getLastModifiedTimestamp());
+            document.append(ExerciseSO.LAST_MODIFIED_TIMESTAMP, exerciseSO.getLastModifiedTimestamp())
                     .append(ExerciseSO.SEEN_BY_THERAPIST, exerciseSO.isSeenByTherapist())
                     .append(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP, exerciseSO.getSeenByTherapistTimestamp());
+            return document;
+
+//            return new Document(ExerciseSO.SENT, exerciseSO.isSent())
+//                    .append(ExerciseSO.LAST_MODIFIED_TIMESTAMP, ISO)
+//                    .append(ExerciseSO.LAST_MODIFIED_TIMESTAMP, exerciseSO.getLastModifiedTimestamp())
+//                    .append(ExerciseSO.SEEN_BY_THERAPIST, exerciseSO.isSeenByTherapist())
+//                    .append(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP, exerciseSO.getSeenByTherapistTimestamp());
         }
 
         public static ExerciseSO convert(Document document) {
@@ -75,7 +81,7 @@ public class FormDataConverter {
                 .append(FormDataSO.CONTENT_ID, formDataSO.getContentId())
                 .append(FormDataSO.EDITABLE, formDataSO.isEditable());
 
-        if (formDataSO.isExercise()) {
+        if (FormDataSOs.isExercise(formDataSO)) {
             Document exerciseDocument = ExerciseConverter.convert(formDataSO.getExerciseSO());
             document.append(FormDataSO.EXERCISE, exerciseDocument);
         }
@@ -87,7 +93,7 @@ public class FormDataConverter {
         }
         document.append(FormDataSO.FORM_ELEMENT_DATA_LIST, formElementDataList);
 
-        if (formDataSO.hasFeedback()) {
+        if (FormDataSOs.hasFeedback(formDataSO)) {
             Document feedbackDocument = FeedbackConverter.convert(formDataSO.getFeedbackSO());
             document.append(FormDataSO.FEEDBACK, feedbackDocument);
         }

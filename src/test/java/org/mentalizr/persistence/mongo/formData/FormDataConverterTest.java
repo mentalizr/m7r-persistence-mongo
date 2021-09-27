@@ -68,9 +68,9 @@ class FormDataConverterTest {
         FormDataSO formDataSO = createSimpleFormDataSO();
         ExerciseSO exerciseSO = new ExerciseSO();
         exerciseSO.setSent(true);
-        exerciseSO.setLastModifiedTimestamp("lastModifiedTimestamp");
+        exerciseSO.setLastModifiedTimestamp("2021-09-27T10:47:01.443866Z");
         exerciseSO.setSeenByTherapist(true);
-        exerciseSO.setSeenByTherapistTimestamp("seenByTherapistTimestamp");
+        exerciseSO.setSeenByTherapistTimestamp("");
         formDataSO.setExerciseSO(exerciseSO);
         return formDataSO;
     }
@@ -80,9 +80,9 @@ class FormDataConverterTest {
         assertNotNull(formDataSO.getExerciseSO());
         ExerciseSO exerciseSO = formDataSO.getExerciseSO();
         assertTrue(exerciseSO.isSent());
-        assertEquals("lastModifiedTimestamp", exerciseSO.getLastModifiedTimestamp());
+        assertEquals("2021-09-27T10:47:01.443866Z", exerciseSO.getLastModifiedTimestamp());
         assertTrue(exerciseSO.isSeenByTherapist());
-        assertEquals("seenByTherapistTimestamp", exerciseSO.getSeenByTherapistTimestamp());
+        assertEquals("", exerciseSO.getSeenByTherapistTimestamp());
     }
 
     private String getExerciseFormDataSOAsJson() {
@@ -92,9 +92,9 @@ class FormDataConverterTest {
                 "  \"editable\": true,\n" +
                 "  \"exercise\": {\n" +
                 "    \"sent\": true,\n" +
-                "    \"lastModifiedTimestamp\": \"lastModifiedTimestamp\",\n" +
+                "    \"lastModifiedTimestamp\": \"2021-09-27T10:47:01.443866Z\",\n" +
                 "    \"seenByTherapist\": true,\n" +
-                "    \"seenByTherapistTimestamp\": \"seenByTherapistTimestamp\"\n" +
+                "    \"seenByTherapistTimestamp\": \"\"\n" +
                 "  },\n" +
                 "  \"formElementDataList\": [\n" +
                 "    {\n" +
@@ -136,9 +136,9 @@ class FormDataConverterTest {
                 "  \"editable\": true,\n" +
                 "  \"exercise\": {\n" +
                 "    \"sent\": true,\n" +
-                "    \"lastModifiedTimestamp\": \"lastModifiedTimestamp\",\n" +
+                "    \"lastModifiedTimestamp\": \"2021-09-27T10:47:01.443866Z\",\n" +
                 "    \"seenByTherapist\": true,\n" +
-                "    \"seenByTherapistTimestamp\": \"seenByTherapistTimestamp\"\n" +
+                "    \"seenByTherapistTimestamp\": \"\"\n" +
                 "  },\n" +
                 "  \"formElementDataList\": [\n" +
                 "    {\n" +

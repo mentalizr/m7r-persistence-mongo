@@ -1,6 +1,7 @@
 package org.mentalizr.persistence.mongo.formData;
 
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSOs;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormElementDataSO;
 
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.List;
 public class FormDataMerger {
 
     public static FormDataSO merge(FormDataSO formDataSO, FormDataSO formDataSOPreexisting) {
+
+        checkPlausibility(formDataSO, formDataSOPreexisting);
 
         List<FormElementDataSO> formElementDataSOListUpdated
                 = updatePreexistingElements(formDataSO, formDataSOPreexisting);
@@ -24,6 +27,12 @@ public class FormDataMerger {
         );
     }
 
+    private static void checkPlausibility(FormDataSO formDataSO, FormDataSO formDataSOPreexisting) {
+        if (FormDataSOs.isExercise(formDataSO) || FormDataSOs.isExercise(formDataSOPreexisting)) {
+            throw new RuntimeException("Plausibility failed on merging FormData documents: exercise can not be merged.");
+        }
+    }
+
     private static List<FormElementDataSO> updatePreexistingElements(FormDataSO formDataSO, FormDataSO formDataSOPreexisting) {
 
         List<FormElementDataSO> formElementDataSOListPreexisting = formDataSOPreexisting.getFormElementDataList();
@@ -32,11 +41,11 @@ public class FormDataMerger {
         for (FormElementDataSO formElementDataSOPreexisting : formElementDataSOListPreexisting) {
 
             String formElementId = formElementDataSOPreexisting.getFormElementId();
-            boolean updateFormElementData = formDataSO.containsFormElementDataId(formElementId);
+            boolean updateFormElementData = FormDataSOs.containsFormElementDataId(formDataSO, formElementId);
 
             if (updateFormElementData) {
                 //noinspection OptionalGetWithoutIsPresent
-                formElementDataSOListPost.add(formDataSO.getFormElementDataById(formElementId).get());
+                formElementDataSOListPost.add(FormDataSOs.getFormElementDataById(formDataSO, formElementId).get());
             } else {
                 formElementDataSOListPost.add(formElementDataSOPreexisting);
             }
@@ -54,7 +63,8 @@ public class FormDataMerger {
         for (FormElementDataSO formElementDataSOUpdate : formElementDataSOListUpdate) {
 
             String formElementId = formElementDataSOUpdate.getFormElementId();
-            boolean takeOver = !formDataSOPreexisting.containsFormElementDataId(formElementId);
+
+            boolean takeOver = !FormDataSOs.containsFormElementDataId(formDataSOPreexisting, formElementId);
 
             if (takeOver) {
                 formElementDataSOListPost.add(formElementDataSOUpdate);
