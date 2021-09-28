@@ -3,6 +3,7 @@ package org.mentalizr.persistence.mongo.formData;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.mentalizr.persistence.mongo.MongoDates;
@@ -15,24 +16,18 @@ public class FormDataConverter {
         public static Document convert(ExerciseSO exerciseSO) {
             Document document = new Document(ExerciseSO.SENT, exerciseSO.isSent());
             MongoDates.append(document, ExerciseSO.LAST_MODIFIED_TIMESTAMP, exerciseSO.getLastModifiedTimestamp());
-            document.append(ExerciseSO.LAST_MODIFIED_TIMESTAMP, exerciseSO.getLastModifiedTimestamp())
-                    .append(ExerciseSO.SEEN_BY_THERAPIST, exerciseSO.isSeenByTherapist())
-                    .append(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP, exerciseSO.getSeenByTherapistTimestamp());
+            document.append(ExerciseSO.SEEN_BY_THERAPIST, exerciseSO.isSeenByTherapist());
+            MongoDates.append(document, ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP, exerciseSO.getSeenByTherapistTimestamp());
             return document;
-
-//            return new Document(ExerciseSO.SENT, exerciseSO.isSent())
-//                    .append(ExerciseSO.LAST_MODIFIED_TIMESTAMP, ISO)
-//                    .append(ExerciseSO.LAST_MODIFIED_TIMESTAMP, exerciseSO.getLastModifiedTimestamp())
-//                    .append(ExerciseSO.SEEN_BY_THERAPIST, exerciseSO.isSeenByTherapist())
-//                    .append(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP, exerciseSO.getSeenByTherapistTimestamp());
         }
 
         public static ExerciseSO convert(Document document) {
             boolean sent = document.getBoolean(ExerciseSO.SENT);
-            String lastModifiedTimestamp = document.getString(ExerciseSO.LAST_MODIFIED_TIMESTAMP);
+            Date lastModifiedTimestampDate = document.getDate(ExerciseSO.LAST_MODIFIED_TIMESTAMP);
+            String lastModifiedTimestamp = MongoDates.toIsoString(lastModifiedTimestampDate);
             boolean seenByTherapist = document.getBoolean(ExerciseSO.SEEN_BY_THERAPIST);
-            String seenByTherapistTimestamp = document.getString(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP);
-
+            Date seenByTherapistTimestampDate = document.getDate(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP);
+            String seenByTherapistTimestamp = MongoDates.toIsoString(seenByTherapistTimestampDate);
             return new ExerciseSO(sent, lastModifiedTimestamp, seenByTherapist, seenByTherapistTimestamp);
         }
     }
@@ -57,20 +52,23 @@ public class FormDataConverter {
     private static class FeedbackConverter {
 
         public static Document convert(FeedbackSO feedbackSO) {
-            return new Document(FeedbackSO.TEXT, feedbackSO.getText())
-                    .append(FeedbackSO.CREATED_TIMESTAMP, feedbackSO.getCreatedTimestamp())
-                    .append(FeedbackSO.THERAPIST_ID, feedbackSO.getTherapistId())
-                    .append(FeedbackSO.SEEN_BY_PATIENT, feedbackSO.isSeenByPatient())
-                    .append(FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP, feedbackSO.getSeenByPatientTimestamp());
+            Document document = new Document(FeedbackSO.TEXT, feedbackSO.getText());
+            MongoDates.append(document, FeedbackSO.CREATED_TIMESTAMP, feedbackSO.getCreatedTimestamp());
+            document.append(FeedbackSO.THERAPIST_ID, feedbackSO.getTherapistId());
+            document.append(FeedbackSO.SEEN_BY_PATIENT, feedbackSO.isSeenByPatient());
+            MongoDates.append(document, FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP, feedbackSO.getSeenByPatientTimestamp());
+            return document;
         }
 
         public static FeedbackSO convert(Document document) {
             FeedbackSO feedbackSO = new FeedbackSO();
             feedbackSO.setText(document.getString(FeedbackSO.TEXT));
-            feedbackSO.setCreatedTimestamp(document.getString(FeedbackSO.CREATED_TIMESTAMP));
+            Date createdTimestampDate = document.getDate(FeedbackSO.CREATED_TIMESTAMP);
+            feedbackSO.setCreatedTimestamp(MongoDates.toIsoString(createdTimestampDate));
             feedbackSO.setTherapistId(document.getString(FeedbackSO.THERAPIST_ID));
             feedbackSO.setSeenByPatient(document.getBoolean(FeedbackSO.SEEN_BY_PATIENT));
-            feedbackSO.setSeenByPatientTimestamp(document.getString(FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP));
+            Date seenByTherapistDate = document.getDate(FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP);
+            feedbackSO.setSeenByPatientTimestamp(MongoDates.toIsoString(seenByTherapistDate));
             return feedbackSO;
         }
     }

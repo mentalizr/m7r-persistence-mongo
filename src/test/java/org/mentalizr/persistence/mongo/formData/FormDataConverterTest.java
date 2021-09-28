@@ -3,12 +3,14 @@ package org.mentalizr.persistence.mongo.formData;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 import org.junit.jupiter.api.Test;
+import org.mentalizr.persistence.mongo.MongoDates;
 import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormElementDataSO;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,9 +82,17 @@ class FormDataConverterTest {
         assertNotNull(formDataSO.getExerciseSO());
         ExerciseSO exerciseSO = formDataSO.getExerciseSO();
         assertTrue(exerciseSO.isSent());
-        assertEquals("2021-09-27T10:47:01.443866Z", exerciseSO.getLastModifiedTimestamp());
+        assertEquals("2021-09-27T10:47:01.443Z", exerciseSO.getLastModifiedTimestamp());
         assertTrue(exerciseSO.isSeenByTherapist());
-        assertEquals("", exerciseSO.getSeenByTherapistTimestamp());
+        assertEquals(MongoDates.epochAsISO(), exerciseSO.getSeenByTherapistTimestamp());
+    }
+
+    private void assertExerciseDocument(Document document) {
+        Object exerciseObject = document.get("exercise");
+        assertInstanceOf(Document.class, exerciseObject);
+        Document exerciseDocument = (Document) exerciseObject;
+        Object lastModifiedTimestampObject = exerciseDocument.get("lastModifiedTimestamp");
+        assertInstanceOf(Date.class, lastModifiedTimestampObject);
     }
 
     private String getExerciseFormDataSOAsJson() {
@@ -92,9 +102,13 @@ class FormDataConverterTest {
                 "  \"editable\": true,\n" +
                 "  \"exercise\": {\n" +
                 "    \"sent\": true,\n" +
-                "    \"lastModifiedTimestamp\": \"2021-09-27T10:47:01.443866Z\",\n" +
+                "    \"lastModifiedTimestamp\": {\n" +
+                "      \"$date\": \"2021-09-27T10:47:01.443Z\"\n" +
+                "    },\n" +
                 "    \"seenByTherapist\": true,\n" +
-                "    \"seenByTherapistTimestamp\": \"\"\n" +
+                "    \"seenByTherapistTimestamp\": {\n" +
+                "      \"$date\": \"1970-01-01T00:00:00Z\"\n" +
+                "    }\n" +
                 "  },\n" +
                 "  \"formElementDataList\": [\n" +
                 "    {\n" +
@@ -110,10 +124,10 @@ class FormDataConverterTest {
         FormDataSO formDataSO = createExerciseFormDataSO();
         FeedbackSO feedbackSO = new FeedbackSO();
         feedbackSO.setText("text");
-        feedbackSO.setCreatedTimestamp("createdTimestamp");
+        feedbackSO.setCreatedTimestamp("2021-09-28T12:08:24.377406Z");
         feedbackSO.setTherapistId("therapistId");
         feedbackSO.setSeenByPatient(true);
-        feedbackSO.setSeenByPatientTimestamp("seenByPatientTimestamp");
+        feedbackSO.setSeenByPatientTimestamp("");
         formDataSO.setFeedbackSO(feedbackSO);
         return formDataSO;
     }
@@ -123,10 +137,10 @@ class FormDataConverterTest {
         assertNotNull(formDataSO.getFeedbackSO());
         FeedbackSO feedbackSO = formDataSO.getFeedbackSO();
         assertEquals("text", feedbackSO.getText());
-        assertEquals("createdTimestamp", feedbackSO.getCreatedTimestamp());
+        assertEquals("2021-09-28T12:08:24.377Z", feedbackSO.getCreatedTimestamp());
         assertEquals("therapistId", feedbackSO.getTherapistId());
         assertTrue(feedbackSO.isSeenByPatient());
-        assertEquals("seenByPatientTimestamp", feedbackSO.getSeenByPatientTimestamp());
+        assertEquals(MongoDates.epochAsISO(), feedbackSO.getSeenByPatientTimestamp());
     }
 
     private String getFeedbackFormDataSOAsJson() {
@@ -136,9 +150,13 @@ class FormDataConverterTest {
                 "  \"editable\": true,\n" +
                 "  \"exercise\": {\n" +
                 "    \"sent\": true,\n" +
-                "    \"lastModifiedTimestamp\": \"2021-09-27T10:47:01.443866Z\",\n" +
+                "    \"lastModifiedTimestamp\": {\n" +
+                "      \"$date\": \"2021-09-27T10:47:01.443Z\"\n" +
+                "    },\n" +
                 "    \"seenByTherapist\": true,\n" +
-                "    \"seenByTherapistTimestamp\": \"\"\n" +
+                "    \"seenByTherapistTimestamp\": {\n" +
+                "      \"$date\": \"1970-01-01T00:00:00Z\"\n" +
+                "    }\n" +
                 "  },\n" +
                 "  \"formElementDataList\": [\n" +
                 "    {\n" +
@@ -149,10 +167,14 @@ class FormDataConverterTest {
                 "  ],\n" +
                 "  \"feedback\": {\n" +
                 "    \"text\": \"text\",\n" +
-                "    \"createdTimestamp\": \"createdTimestamp\",\n" +
+                "    \"createdTimestamp\": {\n" +
+                "      \"$date\": \"2021-09-28T12:08:24.377Z\"\n" +
+                "    },\n" +
                 "    \"therapistId\": \"therapistId\",\n" +
                 "    \"seenByPatient\": true,\n" +
-                "    \"seenByPatientTimestamp\": \"seenByPatientTimestamp\"\n" +
+                "    \"seenByPatientTimestamp\": {\n" +
+                "      \"$date\": \"1970-01-01T00:00:00Z\"\n" +
+                "    }\n" +
                 "  }\n" +
                 "}";
     }
@@ -181,6 +203,9 @@ class FormDataConverterTest {
         FormDataSO formDataSO = createExerciseFormDataSO();
 
         Document document = FormDataConverter.convert(formDataSO);
+
+        assertExerciseDocument(document);
+
         String json = getPrettyJson(document);
         if (outputJson) System.out.println(json);
         String expectedJson = getExerciseFormDataSOAsJson();
