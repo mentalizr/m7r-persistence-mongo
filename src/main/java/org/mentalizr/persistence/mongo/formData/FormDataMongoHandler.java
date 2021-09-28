@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.mentalizr.persistence.mongo.DocumentNotFoundException;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.MongoDB;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
@@ -19,23 +20,17 @@ public class FormDataMongoHandler {
 
     private static final MongoCollection<Document> mongoCollection = MongoDB.getMongoCollection(M7RMongoCollection.FORM_DATA);
 
-    public static Document fetch(String userId, String contentId) {
+    public static Document fetch(String userId, String contentId) throws DocumentNotFoundException {
 
         Document queryDocument =
                 new Document(FormDataSO.USER_ID, userId)
-                .append(FormDataSO.CONTENT_ID, contentId);
+                        .append(FormDataSO.CONTENT_ID, contentId);
 
-        try {
-            FindIterable<Document> iterable = mongoCollection.find(queryDocument);
-            // TODO besser als null Rückgabe
-            return iterable.first() != null ? iterable.first() : null;
+        FindIterable<Document> iterable = mongoCollection.find(queryDocument);
+        if (iterable.first() == null)
+            throw new DocumentNotFoundException("FormData not found for userId: " + userId + ", contentId: " + contentId);
+        return iterable.first();
 
-        } catch (Exception e) {
-
-            // TODO Exception-Konzept
-            logger.error(e.getMessage(), e);
-            return null;
-        }
     }
 
     public static void createOrUpdate(Document document) {
@@ -56,8 +51,7 @@ public class FormDataMongoHandler {
         String userId = formDataSO.getUserId();
         String contentId = formDataSO.getContentId();
 
-        Document documentPreexisting = FormDataMongoHandler.fetch(userId, contentId);
-        FormDataSO formDataSOPreexisting = documentPreexisting == null ? new FormDataSO() : FormDataConverter.convert(documentPreexisting);
+        FormDataSO formDataSOPreexisting = FormDataDAO.obtain(userId, contentId);
 
         FormDataSO formDataSOMerged = FormDataMerger.merge(formDataSO, formDataSOPreexisting);
 

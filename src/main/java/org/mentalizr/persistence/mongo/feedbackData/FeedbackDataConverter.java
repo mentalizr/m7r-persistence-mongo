@@ -20,8 +20,6 @@ public class FeedbackDataConverter {
         long timestamp = document.getLong(FeedbackData.TIMESTAMP_SUBMITTED_BY_THERAPIS);
 
         return new FeedbackData(userId, contentId, feedback, timestamp);
-
     }
-
 
 }
