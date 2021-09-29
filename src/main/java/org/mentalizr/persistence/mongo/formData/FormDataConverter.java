@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.mentalizr.commons.Dates;
 import org.mentalizr.persistence.mongo.MongoDates;
 import org.mentalizr.serviceObjects.frontend.patient.formData.*;
 
@@ -24,10 +25,10 @@ public class FormDataConverter {
         public static ExerciseSO convert(Document document) {
             boolean sent = document.getBoolean(ExerciseSO.SENT);
             Date lastModifiedTimestampDate = document.getDate(ExerciseSO.LAST_MODIFIED_TIMESTAMP);
-            String lastModifiedTimestamp = MongoDates.toIsoString(lastModifiedTimestampDate);
+            String lastModifiedTimestamp = Dates.toIsoString(lastModifiedTimestampDate);
             boolean seenByTherapist = document.getBoolean(ExerciseSO.SEEN_BY_THERAPIST);
             Date seenByTherapistTimestampDate = document.getDate(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP);
-            String seenByTherapistTimestamp = MongoDates.toIsoString(seenByTherapistTimestampDate);
+            String seenByTherapistTimestamp = Dates.toIsoString(seenByTherapistTimestampDate);
             return new ExerciseSO(sent, lastModifiedTimestamp, seenByTherapist, seenByTherapistTimestamp);
         }
     }
@@ -64,11 +65,11 @@ public class FormDataConverter {
             FeedbackSO feedbackSO = new FeedbackSO();
             feedbackSO.setText(document.getString(FeedbackSO.TEXT));
             Date createdTimestampDate = document.getDate(FeedbackSO.CREATED_TIMESTAMP);
-            feedbackSO.setCreatedTimestamp(MongoDates.toIsoString(createdTimestampDate));
+            feedbackSO.setCreatedTimestamp(Dates.toIsoString(createdTimestampDate));
             feedbackSO.setTherapistId(document.getString(FeedbackSO.THERAPIST_ID));
             feedbackSO.setSeenByPatient(document.getBoolean(FeedbackSO.SEEN_BY_PATIENT));
             Date seenByTherapistDate = document.getDate(FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP);
-            feedbackSO.setSeenByPatientTimestamp(MongoDates.toIsoString(seenByTherapistDate));
+            feedbackSO.setSeenByPatientTimestamp(Dates.toIsoString(seenByTherapistDate));
             return feedbackSO;
         }
     }

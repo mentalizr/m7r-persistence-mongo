@@ -20,6 +20,7 @@ dependencies {
 
     api 'org.mongodb:mongodb-driver-sync:3.10.2'
 
+    implementation 'org.mentalizr:m7r-commons:0.0.1-SNAPSHOT'
     implementation 'org.mentalizr:m7r-backend-config:1.0-SNAPSHOT'
     implementation 'org.mentalizr:m7r-service-objects:0.0.1-SNAPSHOT'
 

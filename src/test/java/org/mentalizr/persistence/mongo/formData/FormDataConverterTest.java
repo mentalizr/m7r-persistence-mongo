@@ -3,6 +3,7 @@ package org.mentalizr.persistence.mongo.formData;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 import org.junit.jupiter.api.Test;
+import org.mentalizr.commons.Dates;
 import org.mentalizr.persistence.mongo.MongoDates;
 import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
@@ -84,7 +85,7 @@ class FormDataConverterTest {
         assertTrue(exerciseSO.isSent());
         assertEquals("2021-09-27T10:47:01.443Z", exerciseSO.getLastModifiedTimestamp());
         assertTrue(exerciseSO.isSeenByTherapist());
-        assertEquals(MongoDates.epochAsISO(), exerciseSO.getSeenByTherapistTimestamp());
+        assertEquals(Dates.epochAsISO(), exerciseSO.getSeenByTherapistTimestamp());
     }
 
     private void assertExerciseDocument(Document document) {
@@ -140,7 +141,7 @@ class FormDataConverterTest {
         assertEquals("2021-09-28T12:08:24.377Z", feedbackSO.getCreatedTimestamp());
         assertEquals("therapistId", feedbackSO.getTherapistId());
         assertTrue(feedbackSO.isSeenByPatient());
-        assertEquals(MongoDates.epochAsISO(), feedbackSO.getSeenByPatientTimestamp());
+        assertEquals(Dates.epochAsISO(), feedbackSO.getSeenByPatientTimestamp());
     }
 
     private String getFeedbackFormDataSOAsJson() {
