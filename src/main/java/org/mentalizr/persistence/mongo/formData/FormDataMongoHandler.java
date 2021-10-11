@@ -47,17 +47,32 @@ public class FormDataMongoHandler {
 
     public static void restore(Document document) throws DocumentPreexistingException {
 
-        if (!document.containsKey("_id"))
-            throw new IllegalArgumentException("Specified document for mongodb restore operation " +
-                    "does not contain _id attribute.");
+//        if (!document.containsKey("_id"))
+//            throw new IllegalArgumentException("Specified document for mongodb restore operation " +
+//                    "does not contain _id attribute.");
 
         String userId = (String) document.get(FormDataSO.USER_ID);
         String contentId = (String) document.get(FormDataSO.CONTENT_ID);
 
-        checkDocumentNotPreexisting(userId, contentId);
-        checkDocumentNotPreexistingById(document);
+        logger.debug("FormDataMongoHandler.restore ...");
 
-        mongoCollection.insertOne(document);
+        checkDocumentNotPreexisting(userId, contentId);
+        logger.debug("Document not preexisting.");
+//        checkDocumentNotPreexistingById(document);
+
+//        document.append("_id", new ObjectId());
+
+        logger.debug("Restore document ...");
+
+        try {
+            mongoCollection.insertOne(document);
+        } catch (RuntimeException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        logger.debug("document inserted successfully!");
+
+
     }
 
     public static void createOrUpdate(Document document) {
