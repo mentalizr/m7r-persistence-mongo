@@ -114,7 +114,7 @@ public class FormDataMongoHandler {
         Document queryDocument = new Document(FormDataSO.USER_ID, userId)
                 .append(FormDataSO.CONTENT_ID, contentId);
         FindIterable<Document> iterable = mongoCollection.find(queryDocument);
-        if (iterable.first() == null)
+        if (iterable.first() != null)
             throw new DocumentPreexistingException("FormData is preexisting for userId: " + userId + ", contentId: " + contentId);
     }
 
