@@ -4,7 +4,6 @@ import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 import org.junit.jupiter.api.Test;
 import org.mentalizr.commons.Dates;
-import org.mentalizr.persistence.mongo.MongoDates;
 import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
@@ -74,14 +73,14 @@ class FormDataConverterTest {
         exerciseSO.setLastModifiedTimestamp("2021-09-27T10:47:01.443866Z");
         exerciseSO.setSeenByTherapist(true);
         exerciseSO.setSeenByTherapistTimestamp("");
-        formDataSO.setExerciseSO(exerciseSO);
+        formDataSO.setExercise(exerciseSO);
         return formDataSO;
     }
 
     private void assertExerciseFormDataSO(FormDataSO formDataSO) {
         assertSimpleFormDataSO(formDataSO);
-        assertNotNull(formDataSO.getExerciseSO());
-        ExerciseSO exerciseSO = formDataSO.getExerciseSO();
+        assertNotNull(formDataSO.getExercise());
+        ExerciseSO exerciseSO = formDataSO.getExercise();
         assertTrue(exerciseSO.isSent());
         assertEquals("2021-09-27T10:47:01.443Z", exerciseSO.getLastModifiedTimestamp());
         assertTrue(exerciseSO.isSeenByTherapist());
@@ -129,14 +128,14 @@ class FormDataConverterTest {
         feedbackSO.setTherapistId("therapistId");
         feedbackSO.setSeenByPatient(true);
         feedbackSO.setSeenByPatientTimestamp("");
-        formDataSO.setFeedbackSO(feedbackSO);
+        formDataSO.setFeedback(feedbackSO);
         return formDataSO;
     }
 
     private void assertFeedbackFormDataSO(FormDataSO formDataSO) {
         assertExerciseFormDataSO(formDataSO);
-        assertNotNull(formDataSO.getFeedbackSO());
-        FeedbackSO feedbackSO = formDataSO.getFeedbackSO();
+        assertNotNull(formDataSO.getFeedback());
+        FeedbackSO feedbackSO = formDataSO.getFeedback();
         assertEquals("text", feedbackSO.getText());
         assertEquals("2021-09-28T12:08:24.377Z", feedbackSO.getCreatedTimestamp());
         assertEquals("therapistId", feedbackSO.getTherapistId());

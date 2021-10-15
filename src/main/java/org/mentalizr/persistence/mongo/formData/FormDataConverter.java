@@ -81,7 +81,7 @@ public class FormDataConverter {
                 .append(FormDataSO.EDITABLE, formDataSO.isEditable());
 
         if (FormDataSOs.isExercise(formDataSO)) {
-            Document exerciseDocument = ExerciseConverter.convert(formDataSO.getExerciseSO());
+            Document exerciseDocument = ExerciseConverter.convert(formDataSO.getExercise());
             document.append(FormDataSO.EXERCISE, exerciseDocument);
         }
 
@@ -93,7 +93,7 @@ public class FormDataConverter {
         document.append(FormDataSO.FORM_ELEMENT_DATA_LIST, formElementDataList);
 
         if (FormDataSOs.hasFeedback(formDataSO)) {
-            Document feedbackDocument = FeedbackConverter.convert(formDataSO.getFeedbackSO());
+            Document feedbackDocument = FeedbackConverter.convert(formDataSO.getFeedback());
             document.append(FormDataSO.FEEDBACK, feedbackDocument);
         }
 
@@ -114,7 +114,7 @@ public class FormDataConverter {
         Document exerciseDocument = document.get(FormDataSO.EXERCISE, Document.class);
         if (exerciseDocument != null) {
             ExerciseSO exerciseSO = ExerciseConverter.convert(exerciseDocument);
-            formDataSO.setExerciseSO(exerciseSO);
+            formDataSO.setExercise(exerciseSO);
         }
 
         List<Document> formElementDataDocumentList = document.getList(FormDataSO.FORM_ELEMENT_DATA_LIST, Document.class);
@@ -129,7 +129,7 @@ public class FormDataConverter {
         Document feedbackDocument = document.get(FormDataSO.FEEDBACK, Document.class);
         if (feedbackDocument != null) {
             FeedbackSO feedbackSO = FeedbackConverter.convert(feedbackDocument);
-            formDataSO.setFeedbackSO(feedbackSO);
+            formDataSO.setFeedback(feedbackSO);
         }
 
         return formDataSO;
