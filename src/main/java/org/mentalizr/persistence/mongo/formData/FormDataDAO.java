@@ -22,7 +22,6 @@ public class FormDataDAO {
             FormDataSO formDataSO = new FormDataSO();
             formDataSO.setUserId(userId);
             formDataSO.setContentId(contentId);
-            formDataSO.setEditable(true);
             return formDataSO;
         }
     }

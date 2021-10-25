@@ -22,7 +22,6 @@ public class FormDataMerger {
         return new FormDataSO(
                 formDataSO.getUserId(),
                 formDataSO.getContentId(),
-                formDataSO.isEditable(),
                 formElementDataSOListPost
         );
     }

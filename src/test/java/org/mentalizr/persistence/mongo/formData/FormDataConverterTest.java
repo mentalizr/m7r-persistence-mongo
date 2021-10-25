@@ -23,7 +23,6 @@ class FormDataConverterTest {
         FormDataSO formDataSO = new FormDataSO();
         formDataSO.setUserId("userId");
         formDataSO.setContentId("contentId");
-        formDataSO.setEditable(true);
 
         List<FormElementDataSO> formElementDataSOList = new ArrayList<>();
         FormElementDataSO formElementDataSO = new FormElementDataSO();
@@ -40,7 +39,6 @@ class FormDataConverterTest {
     private void assertSimpleFormDataSO(FormDataSO formDataSO) {
         assertEquals("userId", formDataSO.getUserId());
         assertEquals("contentId", formDataSO.getContentId());
-        assertTrue(formDataSO.isEditable());
         assertNotNull(formDataSO.getFormElementDataList());
         List<FormElementDataSO> formElementDataSOList = formDataSO.getFormElementDataList();
         assertEquals(1, formElementDataSOList.size());
@@ -54,7 +52,6 @@ class FormDataConverterTest {
         return "{\n" +
                 "  \"userId\": \"userId\",\n" +
                 "  \"contentId\": \"contentId\",\n" +
-                "  \"editable\": true,\n" +
                 "  \"formElementDataList\": [\n" +
                 "    {\n" +
                 "      \"formElementId\": \"elementId\",\n" +
@@ -99,7 +96,6 @@ class FormDataConverterTest {
         return "{\n" +
                 "  \"userId\": \"userId\",\n" +
                 "  \"contentId\": \"contentId\",\n" +
-                "  \"editable\": true,\n" +
                 "  \"exercise\": {\n" +
                 "    \"sent\": true,\n" +
                 "    \"lastModifiedTimestamp\": {\n" +
@@ -147,7 +143,6 @@ class FormDataConverterTest {
         return "{\n" +
                 "  \"userId\": \"userId\",\n" +
                 "  \"contentId\": \"contentId\",\n" +
-                "  \"editable\": true,\n" +
                 "  \"exercise\": {\n" +
                 "    \"sent\": true,\n" +
                 "    \"lastModifiedTimestamp\": {\n" +

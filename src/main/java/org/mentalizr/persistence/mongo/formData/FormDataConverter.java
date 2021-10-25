@@ -77,8 +77,7 @@ public class FormDataConverter {
     public static Document convert(FormDataSO formDataSO) {
 
         Document document = new Document(FormDataSO.USER_ID, formDataSO.getUserId())
-                .append(FormDataSO.CONTENT_ID, formDataSO.getContentId())
-                .append(FormDataSO.EDITABLE, formDataSO.isEditable());
+                .append(FormDataSO.CONTENT_ID, formDataSO.getContentId());
 
         if (FormDataSOs.isExercise(formDataSO)) {
             Document exerciseDocument = ExerciseConverter.convert(formDataSO.getExercise());
@@ -104,12 +103,10 @@ public class FormDataConverter {
 
         String userId = document.getString(FormDataSO.USER_ID);
         String contentId = document.getString(FormDataSO.CONTENT_ID);
-        boolean editable = document.getBoolean(FormDataSO.EDITABLE);
 
         FormDataSO formDataSO = new FormDataSO();
         formDataSO.setUserId(userId);
         formDataSO.setContentId(contentId);
-        formDataSO.setEditable(editable);
 
         Document exerciseDocument = document.get(FormDataSO.EXERCISE, Document.class);
         if (exerciseDocument != null) {
