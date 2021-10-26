@@ -7,6 +7,7 @@ import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FormDataDAO {
 
@@ -39,6 +40,26 @@ public class FormDataDAO {
     public static void createOrUpdate(FormDataSO formDataSO) {
         Document document = FormDataConverter.convert(formDataSO);
         FormDataMongoHandler.createOrUpdate(document);
+    }
+
+    public static Optional<FormDataSO> getLastExercise(String userId) {
+        try {
+            Document document = FormDataMongoHandler.getLastExercise(userId);
+            FormDataSO formDataSO = FormDataConverter.convert(document);
+            return Optional.of(formDataSO);
+        } catch (DocumentNotFoundException e) {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<FormDataSO> getLastFeedback(String userId) {
+        try {
+            Document document = FormDataMongoHandler.getLastFeedback(userId);
+            FormDataSO formDataSO = FormDataConverter.convert(document);
+            return Optional.of(formDataSO);
+        } catch (DocumentNotFoundException e) {
+            return Optional.empty();
+        }
     }
 
 }

@@ -10,6 +10,8 @@ import org.mentalizr.persistence.mongo.DocumentNotFoundException;
 import org.mentalizr.persistence.mongo.DocumentPreexistingException;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.MongoDB;
+import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +110,35 @@ public class FormDataMongoHandler {
         Document queryDocument = new Document(FormDataSO.USER_ID, userId);
 
         mongoCollection.deleteMany(queryDocument);
+    }
+
+
+    public static Document getLastExercise(String userId) throws DocumentNotFoundException {
+        Document queryDocument =
+                new Document(FormDataSO.USER_ID, userId)
+                        .append(FormDataSO.EXERCISE, new BasicDBObject("$exists", true));
+
+        FindIterable<Document> iterable = mongoCollection.find(queryDocument)
+                .sort(new BasicDBObject(FormDataSO.EXERCISE + "." + ExerciseSO.LAST_MODIFIED_TIMESTAMP, -1))
+                .limit(1);
+
+        if (iterable.first() == null)
+            throw new DocumentNotFoundException("No FormData with exercise found for user with id [" + userId + "].");
+        return iterable.first();
+    }
+
+    public static Document getLastFeedback(String userId) throws DocumentNotFoundException {
+        Document queryDocument =
+                new Document(FormDataSO.USER_ID, userId)
+                        .append(FormDataSO.FEEDBACK, new BasicDBObject("$exists", true));
+
+        FindIterable<Document> iterable = mongoCollection.find(queryDocument)
+                .sort(new BasicDBObject(FormDataSO.FEEDBACK + "." + FeedbackSO.CREATED_TIMESTAMP, -1))
+                .limit(1);
+
+        if (iterable.first() == null)
+            throw new DocumentNotFoundException("No FormData with feedback found for user with id [" + userId + "].");
+        return iterable.first();
     }
 
     private static void checkDocumentNotPreexisting(String userId, String contentId) throws DocumentPreexistingException {
