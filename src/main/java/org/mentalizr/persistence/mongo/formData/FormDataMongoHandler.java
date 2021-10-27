@@ -141,6 +141,18 @@ public class FormDataMongoHandler {
         return iterable.first();
     }
 
+    public static List<Document> getAllExercises(String userId) {
+        Document queryDocument =
+                new Document(FormDataSO.USER_ID, userId)
+                        .append(FormDataSO.EXERCISE, new BasicDBObject("$exists", true));
+
+        FindIterable<Document> iterable = mongoCollection.find(queryDocument);
+
+        return StreamSupport
+                .stream(iterable.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
     private static void checkDocumentNotPreexisting(String userId, String contentId) throws DocumentPreexistingException {
         Document queryDocument = new Document(FormDataSO.USER_ID, userId)
                 .append(FormDataSO.CONTENT_ID, contentId);

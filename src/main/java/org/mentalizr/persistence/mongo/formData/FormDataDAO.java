@@ -62,4 +62,11 @@ public class FormDataDAO {
         }
     }
 
+    public static List<FormDataSO> getAllExercises(String userId) {
+        List<Document> documentList = FormDataMongoHandler.getAllExercises(userId);
+        List<FormDataSO> formDataSOList = new ArrayList<>();
+        documentList.forEach(document -> formDataSOList.add(FormDataConverter.convert(document)));
+        return formDataSOList;
+    }
+
 }
