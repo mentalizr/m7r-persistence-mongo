@@ -2,7 +2,11 @@ package org.mentalizr.persistence.mongo.patientStatus;
 
 import org.bson.Document;
 import org.mentalizr.persistence.mongo.DocumentNotFoundException;
+import org.mentalizr.serviceObjects.backup.PatientStatusCollectionSO;
 import org.mentalizr.serviceObjects.frontend.patient.PatientStatusSO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PatientStatusDAO {
 
@@ -20,6 +24,15 @@ public class PatientStatusDAO {
             patientStatusSO.setLastContentId("");
             return patientStatusSO;
         }
+    }
+
+    public static PatientStatusCollectionSO fetchAll() {
+        List<PatientStatusSO> patientStatusSOList = new ArrayList<>();
+        List<Document> documentList = PatientStatusMongoHandler.fetchAll();
+        documentList.forEach(document -> patientStatusSOList.add(PatientStatusConverter.convert(document)));
+        PatientStatusCollectionSO patientStatusCollectionSO = new PatientStatusCollectionSO();
+        patientStatusCollectionSO.setCollection(patientStatusSOList);
+        return patientStatusCollectionSO;
     }
 
     public static void createOrUpdate(PatientStatusSO patientStatusSO) {

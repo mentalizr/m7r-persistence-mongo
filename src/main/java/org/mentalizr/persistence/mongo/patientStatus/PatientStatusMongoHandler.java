@@ -31,10 +31,8 @@ public class PatientStatusMongoHandler {
         return iterable.first();
     }
 
-    public static List<Document> fetchAll(String userId) {
-        Document queryDocument =
-                new Document(PatientStatusSO.USER_ID, userId);
-        FindIterable<Document> iterable = mongoCollection.find(queryDocument);
+    public static List<Document> fetchAll() {
+        FindIterable<Document> iterable = mongoCollection.find();
         return StreamSupport
                 .stream(iterable.spliterator(), false)
                 .collect(Collectors.toList());
@@ -65,7 +63,7 @@ public class PatientStatusMongoHandler {
         mongoCollection.updateOne(queryDocument, updateDocument, new UpdateOptions().upsert(true));
     }
 
-    public static void clean(String userId) {
+    public static void delete(String userId) {
         Document queryDocument = new Document(PatientStatusSO.USER_ID, userId);
         mongoCollection.deleteMany(queryDocument);
     }
