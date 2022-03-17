@@ -23,7 +23,7 @@ public class MongoDB {
 
     private static final List<String> collectionList = Arrays.asList("formData", "therapistEvents");
 
-    private static Logger logger = LoggerFactory.getLogger(MongoDB.class);
+    private static final Logger logger = LoggerFactory.getLogger(MongoDB.class);
 
     private static MongoDatabase mongoDatabase;
 
