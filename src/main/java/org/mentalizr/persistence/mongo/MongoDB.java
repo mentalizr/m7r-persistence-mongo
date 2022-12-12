@@ -7,7 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.mentalizr.backend.config.Configuration;
+import org.mentalizr.backend.config.infraUser.InfraUserConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +16,10 @@ import java.util.List;
 
 public class MongoDB {
 
-    private static final String HOST = Configuration.getDocumentDbHost();
-    private static final String DATABASE = Configuration.getDocumentDbName();
-    private static final String USERNAME = Configuration.getDocumentDbUser();
-    private static final String PASSWORD = Configuration.getDocumentDbPassword();
+    private static final String HOST = InfraUserConfiguration.getDocumentDbHost();
+    private static final String DATABASE = InfraUserConfiguration.getDocumentDbName();
+    private static final String USERNAME = InfraUserConfiguration.getDocumentDbUser();
+    private static final String PASSWORD = InfraUserConfiguration.getDocumentDbPassword();
 
     private static final List<String> collectionList = Arrays.asList("formData", "therapistEvents");
 
