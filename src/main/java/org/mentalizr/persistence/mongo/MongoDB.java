@@ -16,30 +16,26 @@ import java.util.List;
 
 public class MongoDB {
 
-    private static final String HOST = InfraUserConfiguration.getDocumentDbHost();
-    private static final String DATABASE = InfraUserConfiguration.getDocumentDbName();
-    private static final String USERNAME = InfraUserConfiguration.getDocumentDbUser();
-    private static final String PASSWORD = InfraUserConfiguration.getDocumentDbPassword();
-
-    private static final List<String> collectionList = Arrays.asList("formData", "therapistEvents");
-
     private static final Logger logger = LoggerFactory.getLogger(MongoDB.class);
+    private static boolean isInitialized = false;
 
     private static MongoDatabase mongoDatabase;
 
-    static {
-        initializeMongoDB();
-    }
-
     public static MongoDatabase getMongoDatabase() {
+        assertInitialized();
         return mongoDatabase;
     }
 
     public static MongoCollection<Document> getMongoCollection(M7RMongoCollection m7RMongoCollection) {
+        assertInitialized();
         return mongoDatabase.getCollection(m7RMongoCollection.getName());
     }
 
-    private static void initializeMongoDB() {
+    public static void initialize(InfraUserConfiguration infraUserConfiguration) {
+        String HOST = infraUserConfiguration.getDocumentDbHost();
+        String DATABASE = infraUserConfiguration.getDocumentDbName();
+        String USERNAME = infraUserConfiguration.getDocumentDbUser();
+        String PASSWORD = infraUserConfiguration.getDocumentDbPassword();
 
         ConnectionString connectionString = new ConnectionString(
                 "mongodb://" + USERNAME + ":" + PASSWORD + "@" + HOST + "/" + DATABASE);
@@ -53,6 +49,13 @@ public class MongoDB {
                 .build();
         MongoClient mongoClient = MongoClients.create(mongoClientSettings);
         mongoDatabase = mongoClient.getDatabase(DATABASE);
+
+        isInitialized = true;
+    }
+
+    private static void assertInitialized() {
+        if (!isInitialized)
+            throw new IllegalStateException(MongoDB.class.getCanonicalName() + " not initialized.");
     }
 
 }
