@@ -6,10 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.mentalizr.persistence.mongo.DocumentNotFoundException;
-import org.mentalizr.persistence.mongo.DocumentPreexistingException;
-import org.mentalizr.persistence.mongo.M7RMongoCollection;
-import org.mentalizr.persistence.mongo.MongoDB;
+import org.mentalizr.persistence.mongo.*;
 import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
@@ -24,7 +21,8 @@ public class FormDataMongoHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(FormDataMongoHandler.class);
 
-    private static final MongoCollection<Document> mongoCollection = MongoDB.getMongoCollection(M7RMongoCollection.FORM_DATA);
+    private static final MongoCollection<Document> mongoCollection
+            = PersistenceMongoContext.getMongoDB().getMongoCollection(M7RMongoCollection.FORM_DATA);
 
     public static Document fetch(String userId, String contentId) throws DocumentNotFoundException {
 

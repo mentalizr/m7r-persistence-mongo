@@ -8,13 +8,27 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.mentalizr.backend.config.infraUser.InfraUserConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MongoDB {
+public class MongoDBSave {
 
+    private static final Logger logger = LoggerFactory.getLogger(MongoDBSave.class);
+    private static boolean isInitialized = false;
 
-    private final MongoDatabase mongoDatabase;
+    private static MongoDatabase mongoDatabase;
 
-    public MongoDB(InfraUserConfiguration infraUserConfiguration) {
+    public static MongoDatabase getMongoDatabase() {
+        assertInitialized();
+        return mongoDatabase;
+    }
+
+    public static MongoCollection<Document> getMongoCollection(M7RMongoCollection m7RMongoCollection) {
+        assertInitialized();
+        return mongoDatabase.getCollection(m7RMongoCollection.getName());
+    }
+
+    public static void initialize(InfraUserConfiguration infraUserConfiguration) {
         String HOST = infraUserConfiguration.getDocumentDbHost();
         String DATABASE = infraUserConfiguration.getDocumentDbName();
         String USERNAME = infraUserConfiguration.getDocumentDbUser();
@@ -28,16 +42,15 @@ public class MongoDB {
                 .retryWrites(true)
                 .build();
         try (MongoClient mongoClient = MongoClients.create(mongoClientSettings)) {
-            this.mongoDatabase = mongoClient.getDatabase(DATABASE);
+            mongoDatabase = mongoClient.getDatabase(DATABASE);
         }
+
+        isInitialized = true;
     }
 
-    public MongoDatabase getMongoDatabase() {
-        return this.mongoDatabase;
-    }
-
-    public MongoCollection<Document> getMongoCollection(M7RMongoCollection m7RMongoCollection) {
-        return this.mongoDatabase.getCollection(m7RMongoCollection.getName());
+    private static void assertInitialized() {
+        if (!isInitialized)
+            throw new IllegalStateException(MongoDBSave.class.getCanonicalName() + " not initialized.");
     }
 
 }
