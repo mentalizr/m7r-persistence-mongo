@@ -27,9 +27,18 @@ public class MongoDB {
                 .applyConnectionString(connectionString)
                 .retryWrites(true)
                 .build();
-        try (MongoClient mongoClient = MongoClients.create(mongoClientSettings)) {
-            this.mongoDatabase = mongoClient.getDatabase(DATABASE);
-        }
+
+        @SuppressWarnings("resource")
+        // try-with-resources-statement leads to unexpected behaviour of resulting MongoDatabase
+        // TODO: try again after upgrade of mongo driver
+        MongoClient mongoClient = MongoClients.create(mongoClientSettings);
+        this.mongoDatabase = mongoClient.getDatabase(DATABASE);
+
+//        try (MongoClient mongoClient = MongoClients.create(mongoClientSettings)) {
+//            this.mongoDatabase = mongoClient.getDatabase(DATABASE);
+//        } catch (RuntimeException e) {
+//
+//        }
     }
 
     public MongoDatabase getMongoDatabase() {
