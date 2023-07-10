@@ -23,14 +23,14 @@ dependencies {
     implementation 'org.mentalizr:m7r-backend-config:1.0-SNAPSHOT'
     implementation 'org.mentalizr:m7r-service-objects:0.0.1-SNAPSHOT'
 
-    implementation 'com.github.arthurpicht:utils-core:1.9.0'
+    implementation 'com.github.arthurpicht:utils-core:1.13.0'
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
-    implementation 'ch.qos.logback:logback-classic:1.2.11'
+    implementation 'ch.qos.logback:logback-classic:1.4.7'
     implementation 'org.slf4j:jul-to-slf4j:1.7.36' // Leitet java.util.logging um auf slf4j, für mongo-java-driver
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 }
 
 test {

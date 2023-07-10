@@ -6,6 +6,7 @@ import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.MongoDB;
+import org.mentalizr.persistence.mongo.PersistenceMongoContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,8 @@ public class ExerciseStatusSubmittedMongoHandler {
 
     private static Logger logger = LoggerFactory.getLogger(ExerciseStatusSubmittedMongoHandler.class);
 
-    private static MongoCollection<Document> mongoCollection = MongoDB.getMongoCollection(M7RMongoCollection.EXERCISE_STATUS__SUBMITTED);
+    private static MongoCollection<Document> mongoCollection
+            = PersistenceMongoContext.getMongoDB().getMongoCollection(M7RMongoCollection.EXERCISE_STATUS__SUBMITTED);
 
 //    public static Document fetch(String userId, String contentId) {
 //

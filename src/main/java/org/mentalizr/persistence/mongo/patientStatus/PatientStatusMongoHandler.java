@@ -5,10 +5,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
-import org.mentalizr.persistence.mongo.DocumentNotFoundException;
-import org.mentalizr.persistence.mongo.DocumentPreexistingException;
-import org.mentalizr.persistence.mongo.M7RMongoCollection;
-import org.mentalizr.persistence.mongo.MongoDB;
+import org.mentalizr.persistence.mongo.*;
 import org.mentalizr.serviceObjects.frontend.patient.PatientStatusSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +18,7 @@ public class PatientStatusMongoHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientStatusMongoHandler.class);
     private static final MongoCollection<Document> mongoCollection 
-            = MongoDB.getMongoCollection(M7RMongoCollection.PATIENT_STATUS);
+            = PersistenceMongoContext.getMongoDB().getMongoCollection(M7RMongoCollection.PATIENT_STATUS);
 
     public static Document fetch(String userId) throws DocumentNotFoundException {
         Document queryDocument = new Document(PatientStatusSO.USER_ID, userId);

@@ -7,52 +7,46 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.mentalizr.backend.config.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.List;
+import org.mentalizr.backend.config.infraUser.InfraUserConfiguration;
 
 public class MongoDB {
 
-    private static final String HOST = Configuration.getDocumentDbHost();
-    private static final String DATABASE = Configuration.getDocumentDbName();
-    private static final String USERNAME = Configuration.getDocumentDbUser();
-    private static final String PASSWORD = Configuration.getDocumentDbPassword();
 
-    private static final List<String> collectionList = Arrays.asList("formData", "therapistEvents");
+    private final MongoDatabase mongoDatabase;
 
-    private static final Logger logger = LoggerFactory.getLogger(MongoDB.class);
-
-    private static MongoDatabase mongoDatabase;
-
-    static {
-        initializeMongoDB();
-    }
-
-    public static MongoDatabase getMongoDatabase() {
-        return mongoDatabase;
-    }
-
-    public static MongoCollection<Document> getMongoCollection(M7RMongoCollection m7RMongoCollection) {
-        return mongoDatabase.getCollection(m7RMongoCollection.getName());
-    }
-
-    private static void initializeMongoDB() {
+    public MongoDB(InfraUserConfiguration infraUserConfiguration) {
+        String HOST = infraUserConfiguration.getDocumentDbHost();
+        String DATABASE = infraUserConfiguration.getDocumentDbName();
+        String USERNAME = infraUserConfiguration.getDocumentDbUser();
+        String PASSWORD = infraUserConfiguration.getDocumentDbPassword();
 
         ConnectionString connectionString = new ConnectionString(
                 "mongodb://" + USERNAME + ":" + PASSWORD + "@" + HOST + "/" + DATABASE);
-
-        // TODO: Security PW im ConnectionString
-        logger.debug("ConnectionString MongoDB: " + connectionString);
 
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .retryWrites(true)
                 .build();
+
+        @SuppressWarnings("resource")
+        // try-with-resources-statement leads to unexpected behaviour of resulting MongoDatabase
+        // TODO: try again after upgrade of mongo driver
         MongoClient mongoClient = MongoClients.create(mongoClientSettings);
-        mongoDatabase = mongoClient.getDatabase(DATABASE);
+        this.mongoDatabase = mongoClient.getDatabase(DATABASE);
+
+//        try (MongoClient mongoClient = MongoClients.create(mongoClientSettings)) {
+//            this.mongoDatabase = mongoClient.getDatabase(DATABASE);
+//        } catch (RuntimeException e) {
+//
+//        }
+    }
+
+    public MongoDatabase getMongoDatabase() {
+        return this.mongoDatabase;
+    }
+
+    public MongoCollection<Document> getMongoCollection(M7RMongoCollection m7RMongoCollection) {
+        return this.mongoDatabase.getCollection(m7RMongoCollection.getName());
     }
 
 }
