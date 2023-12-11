@@ -15,16 +15,16 @@ public class PatientStatusDAO {
         return PatientStatusConverter.convert(document);
     }
 
-    public static PatientStatusSO obtain(String userId) {
-        try {
-            return fetch(userId);
-        } catch (DocumentNotFoundException e) {
-            PatientStatusSO patientStatusSO = new PatientStatusSO();
-            patientStatusSO.setUserId(userId);
-            patientStatusSO.setLastContentId("");
-            return patientStatusSO;
-        }
-    }
+//    public static PatientStatusSO obtain(String userId) {
+//        try {
+//            return fetch(userId);
+//        } catch (DocumentNotFoundException e) {
+//            PatientStatusSO patientStatusSO = new PatientStatusSO();
+//            patientStatusSO.setUserId(userId);
+//            patientStatusSO.setLastContentId("");
+//            return patientStatusSO;
+//        }
+//    }
 
     public static PatientStatusCollectionSO fetchAll() {
         List<PatientStatusSO> patientStatusSOList = new ArrayList<>();
