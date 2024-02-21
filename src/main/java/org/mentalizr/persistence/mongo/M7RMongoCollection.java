@@ -6,7 +6,7 @@ public enum M7RMongoCollection {
     PATIENT_STATUS("patientStatus"),
     FEEDBACK_DATA("feedbackData"),
     EXERCISE_STATUS__SUBMITTED("exerciseStatusSubmitted"),
-    REST_ENDPOINT_LOGGING("restEndPointLogging"),
+    ACTIVITY_DATA("activityStatus"),
     TEST("testCollection");
 
     private final String name;
