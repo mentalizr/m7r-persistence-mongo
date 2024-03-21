@@ -1,5 +1,6 @@
 package org.mentalizr.persistence.mongo.activityStatus;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -97,13 +98,4 @@ public class ActivityStatusMessageMongoHandler {
         }
     }
 
-    public static void deleteOne(ActivityStatusMessageSO activityStatusMessageSO) {
-        Bson filter = Filters.and(Filters.eq(ActivityStatusMessageSO.USER_ID, activityStatusMessageSO.getUserId()),
-                Filters.eq(ActivityStatusMessageSO.TIMESTAMP, activityStatusMessageSO.getTimestamp()));
-        try {
-            mongoCollection.deleteOne(filter);
-        } catch (RuntimeException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
 }
