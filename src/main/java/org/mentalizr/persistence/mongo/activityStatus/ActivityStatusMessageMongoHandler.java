@@ -1,8 +1,8 @@
 package org.mentalizr.persistence.mongo.activityStatus;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
@@ -24,13 +23,6 @@ public class ActivityStatusMessageMongoHandler {
     private static final Logger logger = LoggerFactory.getLogger(ActivityStatusMessageMongoHandler.class);
     private static final MongoCollection<Document> mongoCollection
             = PersistenceMongoContext.getMongoDB().getMongoCollection(M7RMongoCollection.ACTIVITY_DATA);
-
-    public static List<Document> fetchAll() {
-       FindIterable<Document> iterable = mongoCollection.find();
-       return StreamSupport
-               .stream(iterable.spliterator(), false)
-               .collect(Collectors.toList());
-    }
 
     public static List<Document> fetchAllOfUserID(String userId) {
         Document queryDocument = new Document(ActivityStatusMessageSO.USER_ID, userId);
