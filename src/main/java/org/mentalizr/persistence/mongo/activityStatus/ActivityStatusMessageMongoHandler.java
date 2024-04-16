@@ -2,7 +2,6 @@ package org.mentalizr.persistence.mongo.activityStatus;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
@@ -90,4 +89,21 @@ public class ActivityStatusMessageMongoHandler {
         }
     }
 
+    public static void insertMany(List<Document> documents) {
+        mongoCollection.insertMany(documents);
+    }
+
+    public static int wipe() {
+        FindIterable<Document> list = mongoCollection.find();
+        int counter = 0;
+        for( Document doc : list) {
+            mongoCollection.deleteOne(doc);
+            counter++;
+        }
+        return counter;
+    }
+
+    public static long count() {
+        return mongoCollection.countDocuments();
+    }
 }
