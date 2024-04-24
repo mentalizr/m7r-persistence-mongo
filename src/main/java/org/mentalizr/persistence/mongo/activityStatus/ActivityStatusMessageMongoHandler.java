@@ -23,47 +23,47 @@ public class ActivityStatusMessageMongoHandler {
     private static final MongoCollection<Document> mongoCollection
             = PersistenceMongoContext.getMongoDB().getMongoCollection(M7RMongoCollection.ACTIVITY_DATA);
 
-    public static List<Document> fetchAllOfUserID(String userId) {
-        Document queryDocument = new Document(ActivityStatusMessageSO.USER_ID, userId);
-        FindIterable<Document> iterable = mongoCollection.find(queryDocument);
+//    public static List<Document> fetchAllOfUserID(String userId) {
+//        Document queryDocument = new Document(ActivityStatusMessageSO.USER_ID, userId);
+//        FindIterable<Document> iterable = mongoCollection.find(queryDocument);
+//
+//        if (iterable.first() == null) {
+//            return new ArrayList<>();
+//        }
+//        return StreamSupport
+//                .stream(iterable.spliterator(), false)
+//                .toList();
+//    }
 
-        if (iterable.first() == null) {
-            return new ArrayList<>();
-        }
-        return StreamSupport
-                .stream(iterable.spliterator(), false)
-                .toList();
-    }
+//    public static List<Document> fetchAllOfUserIDFrom(String userId, Long timestamp) {
+//        Bson filter = Filters.and(Filters.gte(ActivityStatusMessageSO.TIMESTAMP, timestamp),
+//                Filters.eq(ActivityStatusMessageSO.USER_ID, userId));
+//
+//        FindIterable<Document> iterable = mongoCollection.find()
+//                .filter(filter)
+//                .sort(Sorts.ascending(ActivityStatusMessageSO.TIMESTAMP));
+//        if (iterable.first() == null) {
+//            return new ArrayList<>();
+//        }
+//        return StreamSupport
+//                .stream(iterable.spliterator(), false)
+//                .toList();
+//    }
 
-    public static List<Document> fetchAllOfUserIDFrom(String userId, Long timestamp) {
-        Bson filter = Filters.and(Filters.gte(ActivityStatusMessageSO.TIMESTAMP, timestamp),
-                Filters.eq(ActivityStatusMessageSO.USER_ID, userId));
-
-        FindIterable<Document> iterable = mongoCollection.find()
-                .filter(filter)
-                .sort(Sorts.ascending(ActivityStatusMessageSO.TIMESTAMP));
-        if (iterable.first() == null) {
-            return new ArrayList<>();
-        }
-        return StreamSupport
-                .stream(iterable.spliterator(), false)
-                .toList();
-    }
-
-    public static List<Document> fetchAllOfUserIDUntil(String userId, Long timestamp) {
-        Bson filter = Filters.and(Filters.lte(ActivityStatusMessageSO.TIMESTAMP, timestamp),
-                Filters.eq(ActivityStatusMessageSO.USER_ID, userId));
-
-        FindIterable<Document> iterable = mongoCollection.find()
-                .filter(filter)
-                .sort(Sorts.ascending(ActivityStatusMessageSO.TIMESTAMP));
-        if (iterable.first() == null) {
-            return new ArrayList<>();
-        }
-        return StreamSupport
-                .stream(iterable.spliterator(), false)
-                .toList();
-    }
+//    public static List<Document> fetchAllOfUserIDUntil(String userId, Long timestamp) {
+//        Bson filter = Filters.and(Filters.lte(ActivityStatusMessageSO.TIMESTAMP, timestamp),
+//                Filters.eq(ActivityStatusMessageSO.USER_ID, userId));
+//
+//        FindIterable<Document> iterable = mongoCollection.find()
+//                .filter(filter)
+//                .sort(Sorts.ascending(ActivityStatusMessageSO.TIMESTAMP));
+//        if (iterable.first() == null) {
+//            return new ArrayList<>();
+//        }
+//        return StreamSupport
+//                .stream(iterable.spliterator(), false)
+//                .toList();
+//    }
 
     public static List<Document> fetchAllOfUserIDBetween(String userId, Long fromTimestamp, Long untilTimestamp) {
         Bson filter = Filters.and(Filters.eq(ActivityStatusMessageSO.USER_ID, userId),
@@ -96,7 +96,7 @@ public class ActivityStatusMessageMongoHandler {
     public static int wipe() {
         FindIterable<Document> list = mongoCollection.find();
         int counter = 0;
-        for( Document doc : list) {
+        for (Document doc : list) {
             mongoCollection.deleteOne(doc);
             counter++;
         }
@@ -104,6 +104,7 @@ public class ActivityStatusMessageMongoHandler {
     }
 
     public static long count() {
+        // TODO prüfen ob mongoCollection überhaupt besteht
         return mongoCollection.countDocuments();
     }
 }

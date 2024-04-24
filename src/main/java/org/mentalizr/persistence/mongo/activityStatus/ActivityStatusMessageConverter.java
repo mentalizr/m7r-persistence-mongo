@@ -16,7 +16,6 @@ public class ActivityStatusMessageConverter {
         document.append(ActivityStatusMessageSO.REST_ID, activityStatusMessageSO.getRestId());
         document.append(ActivityStatusMessageSO.ROLE, activityStatusMessageSO.getRole());
         document.append(ActivityStatusMessageSO.MESSAGE, activityStatusMessageSO.getMessage());
-
         return document;
     }
 
@@ -27,7 +26,6 @@ public class ActivityStatusMessageConverter {
         activityStatusMessageSO.setRestId(document.getString(ActivityStatusMessageSO.REST_ID));
         activityStatusMessageSO.setRole(document.getString(ActivityStatusMessageSO.ROLE));
         activityStatusMessageSO.setMessage(document.getString(ActivityStatusMessageSO.MESSAGE));
-
         return activityStatusMessageSO;
     }
 
@@ -35,12 +33,8 @@ public class ActivityStatusMessageConverter {
         List<Document> documentList = new ArrayList<>();
 
         activityStatusMessageSOList.forEach(activityStatusMessageSO -> {
-            Document document = new Document();
-            document.append(ActivityStatusMessageSO.TIMESTAMP, activityStatusMessageSO.getTimestamp());
-            document.append(ActivityStatusMessageSO.USER_ID, activityStatusMessageSO.getUserId());
-            document.append(ActivityStatusMessageSO.REST_ID, activityStatusMessageSO.getRestId());
-            document.append(ActivityStatusMessageSO.ROLE, activityStatusMessageSO.getRole());
-            document.append(ActivityStatusMessageSO.MESSAGE, activityStatusMessageSO.getMessage());
+            Document document = convert(activityStatusMessageSO);
+            documentList.add(document);
         });
 
         return documentList;
