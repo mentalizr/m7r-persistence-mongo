@@ -29,10 +29,10 @@ public class ActivityStatusMessageConverter {
         return activityStatusMessageSO;
     }
 
-    public static List<Document> convertActivityList(List<ActivityStatusMessageSO> activityStatusMessageSOList) {
+    public static List<Document> convertActivityList(ActivityStatusMessageCollectionSO activityStatusMessageCollectionSO) {
         List<Document> documentList = new ArrayList<>();
 
-        activityStatusMessageSOList.forEach(activityStatusMessageSO -> {
+        activityStatusMessageCollectionSO.getCollection().forEach(activityStatusMessageSO -> {
             Document document = convert(activityStatusMessageSO);
             documentList.add(document);
         });

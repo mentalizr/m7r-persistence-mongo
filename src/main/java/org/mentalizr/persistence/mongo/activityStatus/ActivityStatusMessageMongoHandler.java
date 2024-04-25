@@ -81,6 +81,11 @@ public class ActivityStatusMessageMongoHandler {
                 .toList();
     }
 
+    public static void removeActivities(String userId) {
+        Bson filter = Filters.eq(ActivityStatusMessageSO.USER_ID, userId);
+        mongoCollection.deleteMany(filter);
+    }
+
     public static void insertOne(Document document) {
         try {
             mongoCollection.insertOne(document);
