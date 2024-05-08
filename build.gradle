@@ -11,20 +11,20 @@ repositories {
 }
 
 dependencies {
-    api 'org.mongodb:mongodb-driver-sync:3.12.14'
+    api libs.mongodb.driver.sync
 
-    implementation 'org.mentalizr:m7r-commons:0.0.1-SNAPSHOT'
-    implementation 'org.mentalizr:m7r-backend-config:1.0-SNAPSHOT'
-    implementation 'org.mentalizr:m7r-service-objects:0.0.1-SNAPSHOT'
+    implementation libs.m7r.commons
+    implementation libs.m7r.backendConfig
+    implementation libs.m7r.serviceObjects
 
-    implementation 'com.github.arthurpicht:utils-core:1.13.0'
+    implementation libs.ap.utils.core
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
-    implementation 'ch.qos.logback:logback-classic:1.5.2'
-    implementation 'org.slf4j:jul-to-slf4j:1.7.36' // Leitet java.util.logging um auf slf4j, für mongo-java-driver
+    implementation libs.jakarta.xml.bind.api
+    implementation libs.qos.logback
+    implementation libs.slf4j.julToSlf4j // Leitet java.util.logging um auf slf4j, für mongo-java-driver
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.engine
 }
 
 test {
