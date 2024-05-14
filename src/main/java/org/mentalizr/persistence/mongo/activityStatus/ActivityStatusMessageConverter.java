@@ -11,7 +11,7 @@ public class ActivityStatusMessageConverter {
 
     public static Document convert(ActivityStatusMessageSO activityStatusMessageSO) {
         Document document = new Document();
-        document.append(ActivityStatusMessageSO.id,activityStatusMessageSO.getIdValue());
+        document.append(ActivityStatusMessageSO.ID,activityStatusMessageSO.getId());
         document.append(ActivityStatusMessageSO.TIMESTAMP, activityStatusMessageSO.getTimestamp());
         document.append(ActivityStatusMessageSO.USER_ID, activityStatusMessageSO.getUserId());
         document.append(ActivityStatusMessageSO.REST_ID, activityStatusMessageSO.getRestId());
@@ -22,7 +22,7 @@ public class ActivityStatusMessageConverter {
 
     public static ActivityStatusMessageSO convert(Document document) {
         ActivityStatusMessageSO activityStatusMessageSO = new ActivityStatusMessageSO();
-        activityStatusMessageSO.setIdValue(document.getString(ActivityStatusMessageSO.id));
+        activityStatusMessageSO.setId(document.getString(ActivityStatusMessageSO.ID));
         activityStatusMessageSO.setTimestamp(document.getLong(ActivityStatusMessageSO.TIMESTAMP));
         activityStatusMessageSO.setUserId(document.getString(ActivityStatusMessageSO.USER_ID));
         activityStatusMessageSO.setRestId(document.getString(ActivityStatusMessageSO.REST_ID));

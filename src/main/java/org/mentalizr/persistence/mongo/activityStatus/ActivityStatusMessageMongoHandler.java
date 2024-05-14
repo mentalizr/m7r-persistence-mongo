@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-
 public class ActivityStatusMessageMongoHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ActivityStatusMessageMongoHandler.class);
