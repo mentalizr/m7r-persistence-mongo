@@ -66,7 +66,6 @@ public class ActivityStatusMessageMongoHandler {
     }
 
     public static long count() {
-        // TODO prüfen ob mongoCollection überhaupt besteht
         return mongoCollection.countDocuments();
     }
 }
