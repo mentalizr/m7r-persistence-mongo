@@ -1,5 +1,6 @@
 package org.mentalizr.persistence.mongo.formData;
 
+import de.arthurpicht.utils.core.dates.ISODates;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -25,10 +26,10 @@ public class FormDataConverter {
         public static ExerciseSO convert(Document document) {
             boolean sent = document.getBoolean(ExerciseSO.SENT);
             Date lastModifiedTimestampDate = document.getDate(ExerciseSO.LAST_MODIFIED_TIMESTAMP);
-            String lastModifiedTimestamp = Dates.toIsoString(lastModifiedTimestampDate);
+            String lastModifiedTimestamp = ISODates.toIsoString(lastModifiedTimestampDate);
             boolean seenByTherapist = document.getBoolean(ExerciseSO.SEEN_BY_THERAPIST);
             Date seenByTherapistTimestampDate = document.getDate(ExerciseSO.SEEN_BY_THERAPIST_TIMESTAMP);
-            String seenByTherapistTimestamp = Dates.toIsoString(seenByTherapistTimestampDate);
+            String seenByTherapistTimestamp = ISODates.toIsoString(seenByTherapistTimestampDate);
             return new ExerciseSO(sent, lastModifiedTimestamp, seenByTherapist, seenByTherapistTimestamp);
         }
     }
@@ -65,11 +66,11 @@ public class FormDataConverter {
             FeedbackSO feedbackSO = new FeedbackSO();
             feedbackSO.setText(document.getString(FeedbackSO.TEXT));
             Date createdTimestampDate = document.getDate(FeedbackSO.CREATED_TIMESTAMP);
-            feedbackSO.setCreatedTimestamp(Dates.toIsoString(createdTimestampDate));
+            feedbackSO.setCreatedTimestamp(ISODates.toIsoString(createdTimestampDate));
             feedbackSO.setTherapistId(document.getString(FeedbackSO.THERAPIST_ID));
             feedbackSO.setSeenByPatient(document.getBoolean(FeedbackSO.SEEN_BY_PATIENT));
             Date seenByTherapistDate = document.getDate(FeedbackSO.SEEN_BY_PATIENT_TIMESTAMP);
-            feedbackSO.setSeenByPatientTimestamp(Dates.toIsoString(seenByTherapistDate));
+            feedbackSO.setSeenByPatientTimestamp(ISODates.toIsoString(seenByTherapistDate));
             return feedbackSO;
         }
     }
