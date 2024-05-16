@@ -8,7 +8,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.PersistenceMongoContext;
-import org.mentalizr.serviceObjects.userManagement.ActivityStatusMessageSO;
+import org.mentalizr.serviceObjects.userManagement.ActivityMessageSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,20 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-public class ActivityStatusMessageMongoHandler {
+public class ActivityMessageMongoHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ActivityStatusMessageMongoHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActivityMessageMongoHandler.class);
     private static final MongoCollection<Document> mongoCollection
             = PersistenceMongoContext.getMongoDB().getMongoCollection(M7RMongoCollection.ACTIVITY_DATA);
 
     public static List<Document> fetchAllOfUserIDBetween(String userId, Long fromTimestamp, Long untilTimestamp) {
-        Bson filter = Filters.and(Filters.eq(ActivityStatusMessageSO.USER_ID, userId),
-                Filters.gte(ActivityStatusMessageSO.TIMESTAMP, fromTimestamp),
-                Filters.lte(ActivityStatusMessageSO.TIMESTAMP, untilTimestamp));
+        Bson filter = Filters.and(Filters.eq(ActivityMessageSO.USER_ID, userId),
+                Filters.gte(ActivityMessageSO.TIMESTAMP, fromTimestamp),
+                Filters.lte(ActivityMessageSO.TIMESTAMP, untilTimestamp));
 
         FindIterable<Document> iterable = mongoCollection.find()
                 .filter(filter)
-                .sort(Sorts.ascending(ActivityStatusMessageSO.TIMESTAMP));
+                .sort(Sorts.ascending(ActivityMessageSO.TIMESTAMP));
         if (iterable.first() == null) {
             return new ArrayList<>();
         }
@@ -39,7 +39,7 @@ public class ActivityStatusMessageMongoHandler {
     }
 
     public static void removeActivities(String userId) {
-        Bson filter = Filters.eq(ActivityStatusMessageSO.USER_ID, userId);
+        Bson filter = Filters.eq(ActivityMessageSO.USER_ID, userId);
         mongoCollection.deleteMany(filter);
     }
 
