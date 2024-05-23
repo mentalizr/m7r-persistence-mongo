@@ -3,7 +3,7 @@ package org.mentalizr.persistence.mongo.activityStatus;
 import org.bson.Document;
 import org.mentalizr.serviceObjects.userManagement.ActivityMessageSO;
 
-public class ActivityDao {
+public class ActivityDAO {
 
     public static void createMessage(String serviceId, String userId, String roleName) {
         createMessage(serviceId, userId, roleName, "");

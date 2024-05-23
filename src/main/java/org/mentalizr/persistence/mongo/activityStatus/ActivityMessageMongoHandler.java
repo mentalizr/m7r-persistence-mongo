@@ -9,6 +9,7 @@ import org.bson.conversions.Bson;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.PersistenceMongoContext;
 import org.mentalizr.serviceObjects.userManagement.ActivityMessageSO;
+import org.mentalizr.serviceObjects.userManagement.ActivityStatisticCollectionSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,5 +68,23 @@ public class ActivityMessageMongoHandler {
 
     public static long count() {
         return mongoCollection.countDocuments();
+    }
+
+    public static List<Document> fetchStatisticData(List<String> userIdList, List<String> restIdList, Long fromTimestamp, Long untilTimestamp) {
+        Bson filter = Filters.and(Filters.in(ActivityMessageSO.USER_ID, userIdList),
+                Filters.in(ActivityMessageSO.REST_ID, restIdList),
+                Filters.gte(ActivityMessageSO.TIMESTAMP, fromTimestamp),
+                Filters.lte(ActivityMessageSO.TIMESTAMP, untilTimestamp));
+
+        FindIterable<Document> iterable = mongoCollection.find()
+                .filter(filter)
+                .sort(Sorts.ascending(ActivityMessageSO.TIMESTAMP));
+
+        if (iterable.first() == null) {
+            return new ArrayList<>();
+        }
+        return StreamSupport
+                .stream(iterable.spliterator(), false)
+                .toList();
     }
 }
