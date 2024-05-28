@@ -83,6 +83,7 @@ public class ActivityMessageMongoHandler {
         if (iterable.first() == null) {
             return new ArrayList<>();
         }
+
         return StreamSupport
                 .stream(iterable.spliterator(), false)
                 .toList();
