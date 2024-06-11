@@ -1,7 +1,7 @@
 package org.mentalizr.persistence.mongo.activityStatus;
 
 import org.bson.Document;
-import org.mentalizr.serviceObjects.userManagement.ActivityMessageSO;
+import org.mentalizr.serviceObjects.userManagement.ActivityRecordSO;
 
 public class ActivityDAO {
 
@@ -10,20 +10,20 @@ public class ActivityDAO {
     }
 
     public static void createMessage(String serviceId, String userId, String roleName, String message) {
-        ActivityMessageSO activityMessageSO = createActivityStatusMessageSO(serviceId, userId, roleName);
-        activityMessageSO.setMessage(message);
-        Document activityStatusMessageDocument = ActivityMessageConverter.convert(activityMessageSO);
+        ActivityRecordSO activityRecordSO = createActivityStatusMessageSO(serviceId, userId, roleName);
+        activityRecordSO.setMessage(message);
+        Document activityStatusMessageDocument = ActivityMessageConverter.convert(activityRecordSO);
         ActivityMessageMongoHandler.insertOne(activityStatusMessageDocument);
     }
 
-    private static ActivityMessageSO createActivityStatusMessageSO(String serviceId, String userId, String roleName) {
-        ActivityMessageSO activityMessageSO = new ActivityMessageSO();
-        activityMessageSO.setTimestamp(System.currentTimeMillis());
-        activityMessageSO.setUserId(userId);
-        activityMessageSO.setRestId(serviceId);
-        activityMessageSO.setRole(roleName);
-        activityMessageSO.setMessage("");
-        return activityMessageSO;
+    private static ActivityRecordSO createActivityStatusMessageSO(String serviceId, String userId, String roleName) {
+        ActivityRecordSO activityRecordSO = new ActivityRecordSO();
+        activityRecordSO.setTimestamp(System.currentTimeMillis());
+        activityRecordSO.setUserId(userId);
+        activityRecordSO.setRestId(serviceId);
+        activityRecordSO.setRole(roleName);
+        activityRecordSO.setMessage("");
+        return activityRecordSO;
     }
 
 }

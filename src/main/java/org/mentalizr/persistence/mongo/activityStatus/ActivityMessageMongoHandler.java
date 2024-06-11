@@ -8,8 +8,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.PersistenceMongoContext;
-import org.mentalizr.serviceObjects.userManagement.ActivityMessageSO;
-import org.mentalizr.serviceObjects.userManagement.ActivityStatisticCollectionSO;
+import org.mentalizr.serviceObjects.userManagement.ActivityRecordSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +23,13 @@ public class ActivityMessageMongoHandler {
             = PersistenceMongoContext.getMongoDB().getMongoCollection(M7RMongoCollection.ACTIVITY_DATA);
 
     public static List<Document> fetchAllOfUserIDBetween(String userId, Long fromTimestamp, Long untilTimestamp) {
-        Bson filter = Filters.and(Filters.eq(ActivityMessageSO.USER_ID, userId),
-                Filters.gte(ActivityMessageSO.TIMESTAMP, fromTimestamp),
-                Filters.lte(ActivityMessageSO.TIMESTAMP, untilTimestamp));
+        Bson filter = Filters.and(Filters.eq(ActivityRecordSO.USER_ID, userId),
+                Filters.gte(ActivityRecordSO.TIMESTAMP, fromTimestamp),
+                Filters.lte(ActivityRecordSO.TIMESTAMP, untilTimestamp));
 
         FindIterable<Document> iterable = mongoCollection.find()
                 .filter(filter)
-                .sort(Sorts.ascending(ActivityMessageSO.TIMESTAMP));
+                .sort(Sorts.ascending(ActivityRecordSO.TIMESTAMP));
         if (iterable.first() == null) {
             return new ArrayList<>();
         }
@@ -40,7 +39,7 @@ public class ActivityMessageMongoHandler {
     }
 
     public static void removeActivities(String userId) {
-        Bson filter = Filters.eq(ActivityMessageSO.USER_ID, userId);
+        Bson filter = Filters.eq(ActivityRecordSO.USER_ID, userId);
         mongoCollection.deleteMany(filter);
     }
 
@@ -71,14 +70,14 @@ public class ActivityMessageMongoHandler {
     }
 
     public static List<Document> fetchStatisticData(List<String> userIdList, List<String> restIdList, Long fromTimestamp, Long untilTimestamp) {
-        Bson filter = Filters.and(Filters.in(ActivityMessageSO.USER_ID, userIdList),
-                Filters.in(ActivityMessageSO.REST_ID, restIdList),
-                Filters.gte(ActivityMessageSO.TIMESTAMP, fromTimestamp),
-                Filters.lte(ActivityMessageSO.TIMESTAMP, untilTimestamp));
+        Bson filter = Filters.and(Filters.in(ActivityRecordSO.USER_ID, userIdList),
+                Filters.in(ActivityRecordSO.REST_ID, restIdList),
+                Filters.gte(ActivityRecordSO.TIMESTAMP, fromTimestamp),
+                Filters.lte(ActivityRecordSO.TIMESTAMP, untilTimestamp));
 
         FindIterable<Document> iterable = mongoCollection.find()
                 .filter(filter)
-                .sort(Sorts.ascending(ActivityMessageSO.TIMESTAMP));
+                .sort(Sorts.ascending(ActivityRecordSO.TIMESTAMP));
 
         if (iterable.first() == null) {
             return new ArrayList<>();
