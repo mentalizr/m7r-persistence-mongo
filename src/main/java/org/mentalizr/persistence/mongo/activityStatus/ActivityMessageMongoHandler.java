@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 
 public class ActivityMessageMongoHandler {
@@ -69,7 +70,13 @@ public class ActivityMessageMongoHandler {
         return mongoCollection.countDocuments();
     }
 
-    public static List<Document> fetchStatisticData(List<String> userIdList, List<String> restIdList, Long fromTimestamp, Long untilTimestamp) {
+    public static List<Document> fetchStatisticData(
+            Set<String> userIdList,
+            Set<String> restIdList,
+            Long fromTimestamp,
+            Long untilTimestamp)
+    {
+
         Bson filter = Filters.and(Filters.in(ActivityRecordSO.USER_ID, userIdList),
                 Filters.in(ActivityRecordSO.REST_ID, restIdList),
                 Filters.gte(ActivityRecordSO.TIMESTAMP, fromTimestamp),
