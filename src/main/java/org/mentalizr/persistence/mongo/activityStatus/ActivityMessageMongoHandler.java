@@ -74,13 +74,15 @@ public class ActivityMessageMongoHandler {
             Set<String> userIdList,
             Set<String> restIdList,
             Long fromTimestamp,
-            Long untilTimestamp)
-    {
+            Long untilTimestamp) {
 
-        Bson filter = Filters.and(Filters.in(ActivityRecordSO.USER_ID, userIdList),
-                Filters.in(ActivityRecordSO.REST_ID, restIdList),
-                Filters.gte(ActivityRecordSO.TIMESTAMP, fromTimestamp),
-                Filters.lte(ActivityRecordSO.TIMESTAMP, untilTimestamp));
+        Bson filter =
+                Filters.and(
+                        Filters.in(ActivityRecordSO.USER_ID, userIdList),
+                        Filters.in(ActivityRecordSO.REST_ID, restIdList),
+                        Filters.gte(ActivityRecordSO.TIMESTAMP, fromTimestamp),
+                        Filters.lte(ActivityRecordSO.TIMESTAMP, untilTimestamp)
+                );
 
         FindIterable<Document> iterable = mongoCollection.find()
                 .filter(filter)
@@ -94,4 +96,5 @@ public class ActivityMessageMongoHandler {
                 .stream(iterable.spliterator(), false)
                 .toList();
     }
+
 }
