@@ -3,10 +3,13 @@ package org.mentalizr.persistence.mongo.formData;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
-import org.bson.types.ObjectId;
-import org.mentalizr.persistence.mongo.*;
+import org.mentalizr.persistence.mongo.DocumentNotFoundException;
+import org.mentalizr.persistence.mongo.DocumentPreexistingException;
+import org.mentalizr.persistence.mongo.M7RMongoCollection;
+import org.mentalizr.persistence.mongo.PersistenceMongoContext;
 import org.mentalizr.serviceObjects.frontend.patient.formData.ExerciseSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FeedbackSO;
 import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
@@ -14,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -46,11 +50,6 @@ public class FormDataMongoHandler {
     }
 
     public static void restore(Document document) throws DocumentPreexistingException {
-
-//        if (!document.containsKey("_id"))
-//            throw new IllegalArgumentException("Specified document for mongodb restore operation " +
-//                    "does not contain _id attribute.");
-
         String userId = (String) document.get(FormDataSO.USER_ID);
         String contentId = (String) document.get(FormDataSO.CONTENT_ID);
 
@@ -58,10 +57,6 @@ public class FormDataMongoHandler {
 
         checkDocumentNotPreexisting(userId, contentId);
         logger.debug("Document not preexisting.");
-//        checkDocumentNotPreexistingById(document);
-
-//        document.append("_id", new ObjectId());
-
         logger.debug("Restore document ...");
 
         try {
@@ -71,12 +66,9 @@ public class FormDataMongoHandler {
         }
 
         logger.debug("document inserted successfully!");
-
-
     }
 
     public static void createOrUpdate(Document document) {
-
         String userId = (String) document.get(FormDataSO.USER_ID);
         String contentId = (String) document.get(FormDataSO.CONTENT_ID);
 
@@ -89,7 +81,6 @@ public class FormDataMongoHandler {
     }
 
     public static void mergeWithPreexisting(FormDataSO formDataSO) {
-
         String userId = formDataSO.getUserId();
         String contentId = formDataSO.getContentId();
 
@@ -104,12 +95,9 @@ public class FormDataMongoHandler {
     }
 
     public static void clean(String userId) {
-
         Document queryDocument = new Document(FormDataSO.USER_ID, userId);
-
         mongoCollection.deleteMany(queryDocument);
     }
-
 
     public static Document getLastExercise(String userId) throws DocumentNotFoundException {
         Document queryDocument =
@@ -151,23 +139,23 @@ public class FormDataMongoHandler {
                 .collect(Collectors.toList());
     }
 
+    public static Set<String> getDistinctUserIds() {
+        MongoIterable<String> iterable = mongoCollection.distinct(FormDataSO.USER_ID, String.class);
+        return StreamSupport
+                .stream(iterable.spliterator(), false)
+                .collect(Collectors.toSet());
+    }
+
+    public static long getNrOfDocuments() {
+        return mongoCollection.countDocuments();
+    }
+
     private static void checkDocumentNotPreexisting(String userId, String contentId) throws DocumentPreexistingException {
         Document queryDocument = new Document(FormDataSO.USER_ID, userId)
                 .append(FormDataSO.CONTENT_ID, contentId);
         FindIterable<Document> iterable = mongoCollection.find(queryDocument);
         if (iterable.first() != null)
             throw new DocumentPreexistingException("FormData is preexisting for userId: " + userId + ", contentId: " + contentId);
-    }
-
-    private static void checkDocumentNotPreexistingById(Document document) throws DocumentPreexistingException {
-        ObjectId objectId = (ObjectId) document.get("_id");
-
-        BasicDBObject basicDBObjectQuery = new BasicDBObject();
-        basicDBObjectQuery.put("_id", objectId);
-
-        Document documentPre = mongoCollection.find(basicDBObjectQuery).first();
-        if (documentPre != null)
-            throw new DocumentPreexistingException("FormData document is preexisting for _id: " + objectId.toString());
     }
 
 }

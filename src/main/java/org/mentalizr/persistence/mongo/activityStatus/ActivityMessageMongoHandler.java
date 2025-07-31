@@ -1,20 +1,26 @@
 package org.mentalizr.persistence.mongo.activityStatus;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.PersistenceMongoContext;
+import org.mentalizr.serviceObjects.frontend.patient.PatientStatusSO;
+import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
 import org.mentalizr.serviceObjects.userManagement.ActivityRecordSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class ActivityMessageMongoHandler {
@@ -95,6 +101,17 @@ public class ActivityMessageMongoHandler {
         return StreamSupport
                 .stream(iterable.spliterator(), false)
                 .toList();
+    }
+
+    public static Set<String> getDistinctUserIds() {
+        MongoIterable<String> iterable = mongoCollection.distinct(ActivityRecordSO.USER_ID, String.class);
+        return StreamSupport
+                .stream(iterable.spliterator(), false)
+                .collect(Collectors.toSet());
+    }
+
+    public static long getNrOfDocuments() {
+        return mongoCollection.countDocuments();
     }
 
 }
