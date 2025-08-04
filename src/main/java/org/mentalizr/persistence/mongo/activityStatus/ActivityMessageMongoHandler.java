@@ -1,6 +1,5 @@
 package org.mentalizr.persistence.mongo.activityStatus;
 
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoIterable;
@@ -10,14 +9,11 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.mentalizr.persistence.mongo.M7RMongoCollection;
 import org.mentalizr.persistence.mongo.PersistenceMongoContext;
-import org.mentalizr.serviceObjects.frontend.patient.PatientStatusSO;
-import org.mentalizr.serviceObjects.frontend.patient.formData.FormDataSO;
 import org.mentalizr.serviceObjects.userManagement.ActivityRecordSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,6 +43,11 @@ public class ActivityMessageMongoHandler {
 
     public static void removeActivities(String userId) {
         Bson filter = Filters.eq(ActivityRecordSO.USER_ID, userId);
+        mongoCollection.deleteMany(filter);
+    }
+
+    public static void removeActivitiesForAnonymousUsers() {
+        Bson filter = Filters.and(Filters.eq(ActivityRecordSO.USER_ID, ""));
         mongoCollection.deleteMany(filter);
     }
 
