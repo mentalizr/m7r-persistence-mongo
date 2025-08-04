@@ -2,6 +2,7 @@ package org.mentalizr.persistence.mongo.activityStatus;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class ActivityMessageMongoHandler {
@@ -41,6 +43,11 @@ public class ActivityMessageMongoHandler {
 
     public static void removeActivities(String userId) {
         Bson filter = Filters.eq(ActivityRecordSO.USER_ID, userId);
+        mongoCollection.deleteMany(filter);
+    }
+
+    public static void removeActivitiesForAnonymousUsers() {
+        Bson filter = Filters.and(Filters.eq(ActivityRecordSO.USER_ID, ""));
         mongoCollection.deleteMany(filter);
     }
 
@@ -95,6 +102,17 @@ public class ActivityMessageMongoHandler {
         return StreamSupport
                 .stream(iterable.spliterator(), false)
                 .toList();
+    }
+
+    public static Set<String> getDistinctUserIds() {
+        MongoIterable<String> iterable = mongoCollection.distinct(ActivityRecordSO.USER_ID, String.class);
+        return StreamSupport
+                .stream(iterable.spliterator(), false)
+                .collect(Collectors.toSet());
+    }
+
+    public static long getNrOfDocuments() {
+        return mongoCollection.countDocuments();
     }
 
 }

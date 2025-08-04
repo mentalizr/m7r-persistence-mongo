@@ -1,8 +1,13 @@
 package org.mentalizr.persistence.mongo.patientStatus;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoIterable;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.mentalizr.persistence.mongo.*;
@@ -10,7 +15,10 @@ import org.mentalizr.serviceObjects.frontend.patient.PatientStatusSO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -45,6 +53,13 @@ public class PatientStatusMongoHandler {
         }
     }
 
+    private static void checkDocumentNotPreexisting(String userId) throws DocumentPreexistingException {
+        Document queryDocument = new Document(PatientStatusSO.USER_ID, userId);
+        FindIterable<Document> iterable = mongoCollection.find(queryDocument);
+        if (iterable.first() != null)
+            throw new DocumentPreexistingException("PatientStatus is preexisting for userId: " + userId);
+    }
+
     public static void createOrUpdate(Document document) {
         String userId = (String) document.get(PatientStatusSO.USER_ID);
         Document queryDocument = new Document(PatientStatusSO.USER_ID, userId);
@@ -65,11 +80,27 @@ public class PatientStatusMongoHandler {
         mongoCollection.deleteMany(queryDocument);
     }
 
-    private static void checkDocumentNotPreexisting(String userId) throws DocumentPreexistingException {
-        Document queryDocument = new Document(PatientStatusSO.USER_ID, userId);
-        FindIterable<Document> iterable = mongoCollection.find(queryDocument);
-        if (iterable.first() != null)
-            throw new DocumentPreexistingException("PatientStatus is preexisting for userId: " + userId);
+    public static Set<String> getDistinctUserIds() {
+        MongoIterable<String> iterable = mongoCollection.distinct(PatientStatusSO.USER_ID, String.class);
+        return StreamSupport
+                .stream(iterable.spliterator(), false)
+                .collect(Collectors.toSet());
+    }
+
+    public static long getNrOfDocuments() {
+        return mongoCollection.countDocuments();
+    }
+
+    public static Set<String> getDuplicates() {
+        AggregateIterable<Document> results = mongoCollection.aggregate(Arrays.asList(
+                Aggregates.group("$" + PatientStatusSO.USER_ID, Accumulators.sum("count", 1)),
+                Aggregates.match(Filters.gt("count", 1))
+        ));
+        Set<String> duplicates = new HashSet<>();
+        for (Document document : results) {
+            duplicates.add(document.getString(PatientStatusSO.USER_ID));
+        }
+        return duplicates;
     }
 
 }
